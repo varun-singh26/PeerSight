@@ -19,6 +19,8 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include("main.urls")), #If the path is empty, we will redirect to the main.views file. Take the specified path and
+    #path('', include("main.urls")), #If the path is empty, we will redirect to the main.views file. Take the specified path and
                                     #send it to the main.urls file 
+    path("accounts/", include("allauth.urls")), #Will give us all the roots needed to reset the account (reset password, sign out, etc.)
+    path("", include("users.urls")) # If the path is empty, we will redirect to the users.views file. Take the specified path and
 ]
