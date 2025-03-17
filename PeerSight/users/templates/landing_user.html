@@ -1,0 +1,297 @@
+{% load static %}
+
+{% block title %}{% endblock %}
+
+{% block content %}
+<head>
+    <title>User Dashboard</title>
+    <style>
+        body {
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        
+        .dashboard-container {
+            max-width: 900px;
+            margin: 20px auto;
+            font-family: Arial, sans-serif;
+        }
+        
+        h2 {
+            text-align: left;
+            background-color: rgba(80, 80, 80, 0.8);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        /* Assigned items styles */
+        .assigned-items {
+            display: flex;
+            gap: 15px;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        
+        .task-card {
+            background: #333;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            width: calc(25% - 15px);
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .task-type {
+            font-weight: bold;
+        }
+        
+        .task-tag {
+            background: #666;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        
+        .swe-tag {
+            background: #566573;
+        }
+        
+        .completed {
+            background: #2E8B57;
+        }
+        
+        .completed-text {
+            color: #98FB98;
+        }
+        
+        .est-time {
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .due-by {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+        }
+        
+        .due-date {
+            color: #ff9999;
+        }
+        
+        /* Section headers */
+        .section-header {
+            background-color: rgba(80, 80, 80, 0.8);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 8px;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+        
+        /* Classes and team summary styles */
+        .dashboard-lower {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .classes, .team-summary {
+            flex: 1;
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #f5f5f5;
+        }
+        
+        .class-item {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .instructor {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .team {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .team h4 {
+            margin-top: 0;
+            margin-bottom: 8px;
+        }
+        
+        .team-members {
+            margin-bottom: 10px;
+        }
+        
+        .todo-item {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .assigned-items {
+                flex-direction: column;
+            }
+            
+            .task-card {
+                width: 100%;
+            }
+            
+            .dashboard-lower {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<div class="dashboard-container">
+    <h2>Hello {{ username }}, your current assigned items are:</h2>
+    
+    <div class="assigned-items">
+        {% if assigned_tasks %}
+            {% for task in assigned_tasks %}
+                <div class="task-card {% if task.status == 'completed' %}completed{% endif %}">
+                    <div class="task-header">
+                        <span class="task-type">{{ task.name }}</span>
+                        <span class="task-tag swe-tag">SWE</span>
+                    </div>
+                    <p class="est-time">Est. Time required: {{ task.estimated_time }} min</p>
+                    {% if task.status == 'completed' %}
+                        <div class="due-by">
+                            <span>Status:</span>
+                            <span class="completed-text">Completed</span>
+                        </div>
+                    {% else %}
+                        <div class="due-by">
+                            <span>Due by:</span>
+                            <span class="due-date">{{ task.due_date }}</span>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="task-card">
+                <div class="task-header">
+                    <span class="task-type">Group Feedback Form</span>
+                    <span class="task-tag algo-tag">Algorithms</span>
+                </div>
+                <p class="est-time">Est. Time required: 5 min</p>
+                <div class="due-by">
+                    <span>Due by:</span>
+                    <span class="due-date">Friday 11:59pm</span>
+                </div>
+            </div>
+            <div class="task-card">
+                <div class="task-header">
+                    <span class="task-type">Project Reflection</span>
+                    <span class="task-tag webdev-tag">Web Dev</span>
+                </div>
+                <p class="est-time">Est. Time required: 5 min</p>
+                <div class="due-by">
+                    <span>Due by:</span>
+                    <span class="due-date">Friday 11:59pm</span>
+                </div>
+            </div>
+            <div class="task-card completed">
+                <div class="task-header">
+                    <span class="task-type">Delivery 1</span>
+                    <span class="task-tag swe-tag">SWE</span>
+                </div>
+                <p class="est-time">Est. Time required: 10 min</p>
+                <div class="due-by">
+                    <span>Status:</span>
+                    <span class="completed-text">Completed</span>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    
+    <div class="dashboard-lower">
+        <div class="classes">
+            <div class="section-header">Your Classes:</div>
+            {% if user_classes %}
+                {% for class in user_classes %}
+                    <div class="class-item">
+                        <div>{{ class.name }}</div>
+                        <div class="instructor">Instructor: {{ class.instructor }}</div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="class-item">
+                    <div>Software Engineering</div>
+                    <div class="instructor">Instructor: Maira Samary</div>
+                </div>
+                <div class="class-item">
+                    <div>Algorithms</div>
+                    <div class="instructor">Instructor: Alex Creiner</div>
+                </div>
+                <div class="class-item">
+                    <div>Web Dev</div>
+                    <div class="instructor">Instructor: Mira Yun</div>
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="team-summary">
+            <div class="section-header">Team Summaries:</div>
+            {% if teams %}
+                {% for team in teams %}
+                    <div class="team">
+                        <h4>{{ team.name }}:</h4>
+                        <div class="team-members">
+                            {% for member in team.members %}
+                                <p>{{ forloop.counter }}. {{ member }}</p>
+                            {% endfor %}
+                        </div>
+                        {% if team.to_do %}
+                            <div class="todo-item"><strong>To Do:</strong> {{ team.to_do }}</div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="team">
+                    <h4>Debug Divas:</h4>
+                    <div class="team-members">
+                        <p>1. Gleidson</p>
+                        <p>2. Tyler</p>
+                        <p>3. Hsiu</p>
+                        <p>4. Varun</p>
+                    </div>
+                    <div class="todo-item"><strong>To Do:</strong> Delivery 1 Peer Review</div>
+                </div>
+                <div class="team">
+                    <h4>Team 1:</h4>
+                    <div class="team-members">
+                        <p>1. Gleidson</p>
+                        <p>2. David</p>
+                    </div>
+                    <div class="todo-item"><strong>To Do:</strong> Group Feedback Form</div>
+                </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
