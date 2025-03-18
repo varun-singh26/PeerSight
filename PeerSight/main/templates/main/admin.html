@@ -1,89 +1,71 @@
-<!DOCTYPE html> 
-<html>
-    <div style="width: 100%; height: 100%; position: relative; background: linear-gradient(180deg, #D4CFC5 56%, #8F8F8F 96%); overflow: hidden">
-        <div style="width: 976px; height: 123px; left: 8px; top: 18px; position: absolute; opacity: 0.75; background: #1C1C1C; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); border-radius: 25px; border: 5px black solid"></div>
-        <div style="width: 1071px; height: 66px; left: 34px; top: 47px; position: absolute; justify-content: center; display: flex; flex-direction: column"><span style="color: white; font-size: 45px; font-family: Poppins; font-weight: 400; word-wrap: break-word">Hello </span><span style="color: #DCCAA0; font-size: 45px; font-family: Poppins; font-weight: 400; word-wrap: break-word">Admin123</span><span style="color: white; font-size: 45px; font-family: Poppins; font-weight: 400; word-wrap: break-word">, your current classes are:</span></div>
-        <div style="width: 289.31px; height: 88.63px; left: 8px; top: 575px; position: absolute; opacity: 0.75; background: #1C1C1C; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); border-radius: 25px; border: 5px black solid"></div>
-        <div style="width: 242.76px; height: 61.58px; left: 31.73px; top: 588.99px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: white; font-size: 40px; font-family: Poppins; font-weight: 400; word-wrap: break-word">Your Forms:</div>
-        <div style="width: 244.96px; height: 52px; left: 1458px; top: 600px; position: absolute; opacity: 0.75; background: #1C1C1C; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); border-radius: 25px; border: 5px black solid"></div>
-        <div style="width: 216.65px; height: 62px; left: 1511.35px; top: 595px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: white; font-size: 20px; font-family: Poppins; font-weight: 400; word-wrap: break-word">Sort By: Deadline</div>
-        <div style="width: 28px; height: 28px; left: 1473px; top: 612px; position: absolute; overflow: hidden">
-            <div style="width: 10px; height: 5px; left: 17px; top: 22px; position: absolute; outline: 1px white solid; outline-offset: -0.50px"></div>
+{% extends "main/base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block extra_head %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'main/css/adminDashboardStyles.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class = "dashboard-container">
+     <h2>Hello Admin {{ username }}, your current classes are:</h2>
+
+    <div class = "card-container">
+        <div class = class-card> 
+            <span class = "class-tag">CSCI3356.01</span>
+            <span class = "class-name">Software Engineering</span>
+            <span class = "class-tag">Spring 2025</span>
         </div>
-        <div style="width: 375px; height: 330px; left: 1306px; top: 184px; position: absolute; background: white; border-radius: 25px; border: 5px black solid"></div>
-        <div style="width: 295px; height: 62px; left: 1346px; top: 426px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 28px; font-family: Poppins; font-weight: 400; word-wrap: break-word">Fall 2024</div>
-        <div style="width: 324px; height: 85px; left: 1332px; top: 306px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 33px; font-family: Poppins; font-weight: 600; word-wrap: break-word">Computer Science I</div>
-        <div style="width: 171px; height: 43px; left: 1408px; top: 228px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 28px; font-family: Poppins; font-weight: 400; word-wrap: break-word">CSCI1102.02</div>
-        <div style="width: 33px; height: 33px; left: 1624px; top: 195px; position: absolute; overflow: hidden">
-            <div style="width: 30.64px; height: 30.64px; left: 1.18px; top: 1.18px; position: absolute; outline: 1px black solid; outline-offset: -0.50px"></div>
-            <div style="width: 0.59px; height: 1.18px; left: 8.84px; top: 15.91px; position: absolute; outline: 1px black solid; outline-offset: -0.50px"></div>
-            <div style="width: 0.59px; height: 1.18px; left: 9.43px; top: 15.91px; position: absolute; outline: 1px black solid; outline-offset: -0.50px"></div>
-            <div style="width: 0.59px; height: 1.18px; left: 15.91px; top: 15.91px; position: absolute; outline: 1px black solid; outline-offset: -0.50px"></div>
-            <div style="width: 0.59px; height: 1.18px; left: 16.50px; top: 15.91px; position: absolute; outline: 1px black solid; outline-offset: -0.50px"></div>
-            <div style="width: 0.59px; height: 1.18px; left: 22.98px; top: 15.91px; position: absolute; outline: 1px black solid; outline-offset: -0.50px"></div>
-            <div style="width: 0.59px; height: 1.18px; left: 23.57px; top: 15.91px; position: absolute; outline: 1px black solid; outline-offset: -0.50px"></div>
+        <div class = "class-card"> 
+            <span class = "class-tag">CSCI3356.02</span>
+            <span class = "class-name">Software Engineering</span>
+            <span class = "class-tag">Spring 2025</span>
         </div>
-        <div style="width: 375px; height: 330px; left: 886px; top: 184px; position: absolute; background: white; border-radius: 25px; border: 5px black solid"></div>
-        <div style="width: 295px; height: 62px; left: 926px; top: 426px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 28px; font-family: Poppins; font-weight: 400; word-wrap: break-word">Fall 2024</div>
-        <div style="width: 324px; height: 85px; left: 912px; top: 306px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 33px; font-family: Poppins; font-weight: 600; word-wrap: break-word">Computer Science I</div>
-        <div style="width: 163px; height: 43px; left: 992px; top: 228px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 28px; font-family: Poppins; font-weight: 400; word-wrap: break-word">CSCI1102.01</div>
-        <div style="width: 33px; height: 33px; left: 1204px; top: 195px; position: absolute; overflow: hidden">
-            <div style="width: 30.64px; height: 30.64px; left: 1.18px; top: 1.18px; position: absolute; outline: 1px black solid; outline-offset: -0.50px"></div>
-            <div style="width: 0.59px; height: 1.18px; left: 8.84px; top: 15.91px; position: absolute; outline: 1px black solid; outline-offset: -0.50px"></div>
-            <div style="width: 0.59px; height: 1.18px; left: 9.43px; top: 15.91px; position: absolute; outline: 1px black solid; outline-offset: -0.50px"></div>
-            <div style="width: 0.59px; height: 1.18px; left: 15.91px; top: 15.91px; position: absolute; outline: 1px black solid; outline-offset: -0.50px"></div>
-            <div style="width: 0.59px; height: 1.18px; left: 16.50px; top: 15.91px; position: absolute; outline: 1px black solid; outline-offset: -0.50px"></div>
-            <div style="width: 0.59px; height: 1.18px; left: 22.98px; top: 15.91px; position: absolute; outline: 1px black solid; outline-offset: -0.50px"></div>
-            <div style="width: 0.59px; height: 1.18px; left: 23.57px; top: 15.91px; position: absolute; outline: 1px black solid; outline-offset: -0.50px"></div>
+        <div class = "class-card"> 
+            <span class = "class-tag">CSCI1102.01</span>
+            <span class = "class-name">Computer Science I</span>
+            <span class = "class-tag">Fall 2024</span>
         </div>
-        <div style="width: 375px; height: 330px; left: 466px; top: 184px; position: absolute; background: white; border-radius: 25px; border: 5px black solid"></div>
-        <div style="width: 295px; height: 62px; left: 506px; top: 426px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 28px; font-family: Poppins; font-weight: 400; word-wrap: break-word">Spring 2025</div>
-        <div style="width: 324px; height: 85px; left: 492px; top: 306px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 33px; font-family: Poppins; font-weight: 600; word-wrap: break-word">Software Engineering</div>
-        <div style="width: 188px; height: 43px; left: 560px; top: 228px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 28px; font-family: Poppins; font-weight: 400; word-wrap: break-word">CSCI3356.02</div>
-        <div style="width: 33px; height: 33px; left: 784px; top: 195px; position: absolute; overflow: hidden">
-            <div style="width: 30.64px; height: 30.64px; left: 1.18px; top: 1.18px; position: absolute; outline: 1px black solid; outline-offset: -0.50px"></div>
-            <div style="width: 0.59px; height: 1.18px; left: 8.84px; top: 15.91px; position: absolute; outline: 1px black solid; outline-offset: -0.50px"></div>
-            <div style="width: 0.59px; height: 1.18px; left: 9.43px; top: 15.91px; position: absolute; outline: 1px black solid; outline-offset: -0.50px"></div>
-            <div style="width: 0.59px; height: 1.18px; left: 15.91px; top: 15.91px; position: absolute; outline: 1px black solid; outline-offset: -0.50px"></div>
-            <div style="width: 0.59px; height: 1.18px; left: 16.50px; top: 15.91px; position: absolute; outline: 1px black solid; outline-offset: -0.50px"></div>
-            <div style="width: 0.59px; height: 1.18px; left: 22.98px; top: 15.91px; position: absolute; outline: 1px black solid; outline-offset: -0.50px"></div>
-            <div style="width: 0.59px; height: 1.18px; left: 23.57px; top: 15.91px; position: absolute; outline: 1px black solid; outline-offset: -0.50px"></div>
-        </div>
-        <div style="width: 375px; height: 330px; left: 46px; top: 184px; position: absolute; background: white; border-radius: 25px; border: 5px black solid"></div>
-        <div style="width: 295px; height: 62px; left: 86px; top: 426px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 28px; font-family: Poppins; font-weight: 400; word-wrap: break-word">Spring 2025</div>
-        <div style="width: 324px; height: 85px; left: 72px; top: 306px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 33px; font-family: Poppins; font-weight: 600; word-wrap: break-word">Software Engineering</div>
-        <div style="width: 181px; height: 43px; left: 143px; top: 228px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 28px; font-family: Poppins; font-weight: 400; word-wrap: break-word">CSCI3356.01</div>
-        <div style="width: 33px; height: 33px; left: 364px; top: 195px; position: absolute; overflow: hidden">
-            <div style="width: 30.64px; height: 30.64px; left: 1.18px; top: 1.18px; position: absolute; outline: 1px black solid; outline-offset: -0.50px"></div>
-            <div style="width: 0.59px; height: 1.18px; left: 8.84px; top: 15.91px; position: absolute; outline: 1px black solid; outline-offset: -0.50px"></div>
-            <div style="width: 0.59px; height: 1.18px; left: 9.43px; top: 15.91px; position: absolute; outline: 1px black solid; outline-offset: -0.50px"></div>
-            <div style="width: 0.59px; height: 1.18px; left: 15.91px; top: 15.91px; position: absolute; outline: 1px black solid; outline-offset: -0.50px"></div>
-            <div style="width: 0.59px; height: 1.18px; left: 16.50px; top: 15.91px; position: absolute; outline: 1px black solid; outline-offset: -0.50px"></div>
-            <div style="width: 0.59px; height: 1.18px; left: 22.98px; top: 15.91px; position: absolute; outline: 1px black solid; outline-offset: -0.50px"></div>
-            <div style="width: 0.59px; height: 1.18px; left: 23.57px; top: 15.91px; position: absolute; outline: 1px black solid; outline-offset: -0.50px"></div>
-        </div>
-        <div style="width: 1681px; height: 411px; left: 23px; top: 691px; position: absolute; background: white; border-radius: 25px"></div>
-        <div style="width: 351px; height: 43px; left: 93px; top: 709px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 26px; font-family: Poppins; font-weight: 500; word-wrap: break-word">Name </div>
-        <div style="width: 490px; height: 38px; left: 475px; top: 716px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 26px; font-family: Poppins; font-weight: 500; word-wrap: break-word">Class</div>
-        <div style="width: 335px; height: 38px; left: 996px; top: 718px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 26px; font-family: Poppins; font-weight: 500; word-wrap: break-word">Students Submitted</div>
-        <div style="width: 274px; height: 34px; left: 1362px; top: 720px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 26px; font-family: Poppins; font-weight: 500; word-wrap: break-word">Due Date</div>
-        <div style="width: 1629px; height: 87px; left: 52px; top: 879px; position: absolute; background: #D9D9D9; border-radius: 25px"></div>
-        <div style="width: 1629px; height: 87px; left: 52px; top: 984px; position: absolute; background: #D9D9D9; border-radius: 25px"></div>
-        <div style="width: 1629px; height: 87px; left: 49px; top: 773px; position: absolute; background: #D9D9D9; border-radius: 25px"></div>
-        <div style="width: 351px; height: 43px; left: 114px; top: 1005px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 26px; font-family: Poppins; font-weight: 400; word-wrap: break-word">Delivery 1 Peer Review</div>
-        <div style="width: 490px; height: 38px; left: 496px; top: 1012px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 28px; font-family: Poppins; font-weight: 400; word-wrap: break-word">CSCI3356.01</div>
-        <div style="width: 335px; height: 38px; left: 1017px; top: 1014px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: #34A853; font-size: 26px; font-family: Poppins; font-weight: 400; word-wrap: break-word">38/38</div>
-        <div style="width: 274px; height: 34px; left: 1383px; top: 1016px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 26px; font-family: Poppins; font-weight: 400; word-wrap: break-word">2/14/2025</div>
-        <div style="width: 351px; height: 43px; left: 114px; top: 897px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 26px; font-family: Poppins; font-weight: 400; word-wrap: break-word">Delivery 2 Peer Review</div>
-        <div style="width: 490px; height: 38px; left: 496px; top: 904px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 28px; font-family: Poppins; font-weight: 400; word-wrap: break-word">CSCI3356.02</div>
-        <div style="width: 335px; height: 38px; left: 1017px; top: 906px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: #E42D2D; font-size: 26px; font-family: Poppins; font-weight: 400; word-wrap: break-word">25/31</div>
-        <div style="width: 274px; height: 34px; left: 1383px; top: 908px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 26px; font-family: Poppins; font-weight: 400; word-wrap: break-word">Friday 11:59 PM</div>
-        <div style="width: 351px; height: 43px; left: 114px; top: 793px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 26px; font-family: Poppins; font-weight: 400; word-wrap: break-word">Delivery 2 Peer Review</div>
-        <div style="width: 490px; height: 38px; left: 496px; top: 800px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 28px; font-family: Poppins; font-weight: 400; word-wrap: break-word">CSCI3356.01</div>
-        <div style="width: 335px; height: 38px; left: 1017px; top: 802px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: #E42D2D; font-size: 26px; font-family: Poppins; font-weight: 400; word-wrap: break-word">29/38</div>
-        <div style="width: 274px; height: 34px; left: 1383px; top: 804px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 26px; font-family: Poppins; font-weight: 400; word-wrap: break-word">Friday 11:59 PM</div>
-        <div style="width: 7px; height: 64px; left: 1690px; top: 709px; position: absolute; background: #D9D9D9; border-radius: 20px"></div>
-        <div style="width: 175px; height: 10px; left: 23px; top: 538px; position: absolute; background: #1C1C1C; border-radius: 20px"></div>
+        <div class = "class-card"> 
+            <span class = "class-tag">CSCI1102.02</span>
+            <span class = "class-name">Computer Science I</span>
+            <span class = "class-tag">Fall 2024</span>
+        </div>        
+    </div>
+    
+    <div class = "form-section"> 
+        <h2 style = "font-size:20px">Your Forms:</h2>
     </div>
 
-</html>
+    <div class = "form-container"> 
+        <div class="forms">
+            <h3>Name</h3>
+            <p>Delivery 2 Peer Review</p>
+            <p>Delivery 2 Peer Review</p>
+            <p>Delivery 1 Peer Review</p>
+        </div>
+
+        <div class="forms">
+            <h3>Class</h3>
+            <p>CSCI3356.01</p>
+            <p>CSCI3356.02</p>
+            <p>CSCI3356.01</p>
+        </div>
+
+        <div class="forms">
+            <h3>Students Submitted</h3>
+            <p style = "color:#E42D2D">29/38</p>
+            <p style = "color:#E42D2D">25/31</p>
+            <p style = "color:#34A853;">38/38</p>
+        </div>
+
+        <div class="forms">
+            <h3>Due Date</h3>
+            <p>Friday 11:59 PM</p>
+            <p>Friday 11:59 PM</p>
+            <p>2/14/2025</p>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

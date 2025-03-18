@@ -1,0 +1,95 @@
+body {
+    background-color: #f0f0f0;
+    font-family: Arial, sans-serif;
+}
+
+.dashboard-container {
+    max-width: 900px;
+    margin: 20px auto;
+    font-family: Arial, sans-serif;
+}
+
+h2 {
+    text-align: left;
+    background-color: rgba(80, 80, 80, 0.8);
+    color: white;
+    padding: 10px 10px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.card-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); 
+    gap: 15px; 
+}
+
+.class-card {
+    background: #FFF;
+    color: #000;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.class-tag{
+    display: flex;
+    justify-content: center;
+    flex-shrink: 0;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.class-name{
+    font-weight: bold;
+    display: flex;
+    width: 181px;
+    height: 43px;
+    text-align: center;
+    flex-direction: column;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.form-section {
+    display: flex;
+    gap: 20px;
+}
+
+.form-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); 
+    gap: 15px; 
+    background: #FFF;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+.forms {
+    padding: 10px;
+    border-radius: 8px;
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center; 
+    height: 100%;
+}
+.forms h3 {
+    font-size: 17px;
+    font-weight: 500;
+    margin-top: 0;
+    text-align: center;
+}
+.forms p {
+    margin: 5px 0;
+    text-align: center;
+    padding: 10px 0px;
+}
+
+@media (max-width: 768px) {
+    .class-card {
+        width: 100%;
+    }
+    .form-tag {
+        flex-direction: column;
+    }
+}
