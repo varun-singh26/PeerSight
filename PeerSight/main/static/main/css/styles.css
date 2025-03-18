@@ -1,0 +1,29 @@
+/* Custom styles beyond Tailwind */
+
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "Poppins", sans-serif;
+}
+
+/* sidebar styling */
+.nav-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* main content styling */
+#content {
+    flex: 1; /* Fill remaining space */
+  }
+
+
+/* Ensure full height on mobile devices */
+@media (max-height: 600px) {
+    main {
+      min-height: 100vh;
+    }
+}
+
+
+  

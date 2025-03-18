@@ -13,6 +13,11 @@ body {
   .role-card:active {
     transform: scale(0.98);
   }
+
+  /* sidebar styling */
+  .nav-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
   
   /* Ensure full height on mobile devices */
   @media (max-height: 600px) {
