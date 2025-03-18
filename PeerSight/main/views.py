@@ -40,15 +40,13 @@ def student_landing(request):
     }
 
     return render(request, 'main/landing_user.html', context)
-       
-    return render(request, "users/landing_user.html", {}) 
 
 def signin(request):
     return render(request, "users/signin.html", {}) 
     
 
 
-def logout(request):
+def user_logout(request):
     logout(request) #logout the user
     return redirect("/") #return to signin page
 

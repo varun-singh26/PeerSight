@@ -141,6 +141,21 @@ h2 {
     color: #666;
 }
 
+/* Logout Section styling */
+.logout {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.logout .logout-button {
+    background: #b13030;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
 /* Responsive design */
 @media (max-width: 768px) {
     .assigned-items {
