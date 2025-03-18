@@ -15,14 +15,14 @@ h2 {
     color: white;
     padding: 10px 20px;
     border-radius: 8px;
-    margin-bottom: 20px;
+    margin-bottom: 20px !important;
 }
 
 /* Assigned items styles */
 .assigned-items {
     display: flex;
     gap: 15px;
-    justify-content: space-between;
+    justify-content: flex-start;
     flex-wrap: wrap;
     margin-bottom: 20px;
 }
@@ -30,7 +30,7 @@ h2 {
 .task-card {
     background: #333;
     color: white;
-    padding: 15px;
+    padding: 10px;
     border-radius: 10px;
     width: calc(25% - 15px);
     margin-bottom: 15px;
