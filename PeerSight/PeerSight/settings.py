@@ -48,6 +48,10 @@ INSTALLED_APPS = [
     "allauth.socialaccount.providers.google" 
 ]
 
+# The key part: these settings tell allauth to skip the intermediate step
+SOCIALACCOUNT_LOGIN_ON_GET = True
+SOCIALACCOUNT_AUTO_SIGNUP = True
+
 SOCIALACCOUNT_PROVIDERS = {
     "google": {
         "SCOPE": [
