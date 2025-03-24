@@ -32,7 +32,7 @@
         <!--A special function that gives us the url for google signin page
         Adds "accounts/google/login" to the url path
         Define the route after coming back from the google signin url ("/")-->
-        <a href="{% provider_login_url 'google' %}?next=/admin_landing">
+        <a href="{% provider_login_url 'google' %}?next=/route_user/">
             <button type="button"
                 class="role-card flex flex-col justify-center items-center rounded-lg transition-transform cursor-pointer bg-zinc-800 duration-[0.2s] ease-[ease-in-out] h-[200px] w-[200px] max-md:h-[180px] max-md:w-[180px] max-sm:w-full max-sm:h-[150px] max-sm:max-w-[300px]">
                 <figure class="flex justify-center items-center mb-4 h-[60px] w-[60px]">
@@ -43,7 +43,7 @@
         </a>
 
         <!-- Student button -->
-        <a href="{% provider_login_url 'google' %}?next=/student_landing">
+        <a href="{% provider_login_url 'google' %}?next=/route_user/">
             <button type="button"
                 class="role-card flex flex-col justify-center items-center rounded-lg transition-transform cursor-pointer bg-zinc-800 duration-[0.2s] ease-[ease-in-out] h-[200px] w-[200px] max-md:h-[180px] max-md:w-[180px] max-sm:w-full max-sm:h-[150px] max-sm:max-w-[300px]">
                 <figure class="flex justify-center items-center mb-4 h-[60px] w-[60px]">

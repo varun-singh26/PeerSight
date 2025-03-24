@@ -9,6 +9,7 @@ urlpatterns = [
     path("admin_landing/", views.admin_landing, name='admin_landing'),
     path("student_landing/", views.student_landing, name='student_landing'),
 
+    path("route_user/", views.route_user, name='route_user'),
     path("logout/", views.user_logout, name='logout'),
     #path("landing_page/", views.landing_page, name='landing_page'),
 ]

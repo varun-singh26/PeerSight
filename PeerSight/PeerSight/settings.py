@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 SITE_ID= 2 # Ensure this matches your Django Site ID (Need to match the site ID of 127.0.0.1 which is what the preview server runs on)
+            
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -47,10 +48,6 @@ INSTALLED_APPS = [
     "allauth.socialaccount",
     "allauth.socialaccount.providers.google" 
 ]
-
-# The key part: these settings tell allauth to skip the intermediate step
-SOCIALACCOUNT_LOGIN_ON_GET = True
-SOCIALACCOUNT_AUTO_SIGNUP = True
 
 SOCIALACCOUNT_PROVIDERS = {
     "google": {
@@ -158,12 +155,21 @@ AUTHENTICATION_BACKENDS = (
     "allauth.account.auth_backends.AuthenticationBackend"
 )
 
+# These settings tell allauth to skip the intermediate step when users sign-in / up
+SOCIALACCOUNT_LOGIN_ON_GET = True
+SOCIALACCOUNT_AUTO_SIGNUP = True
+
 # django-allauth settings
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = 'none'  # Set to 'mandatory' if you want email verification
-ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_LOGIN_METHODS = {'email'}
 ACCOUNT_USERNAME_REQUIRED = False
 SOCIALACCOUNT_QUERY_EMAIL = True
 
-LOGIN_REDIRECT_URL = "/"
+LOGIN_REDIRECT_URL = "/route_user/"
 LOGOUT_REDIRECT_URL = "/"
+
+# Force Auto-Signup Without Confirmation
+ACCOUNT_ADAPTER = "users.adapter.CustomAccountAdapter"
+SOCIALACCOUNT_ADAPTER = "users.adapter.CustomSocialAccountAdapter"
+

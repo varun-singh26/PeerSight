@@ -116,6 +116,11 @@
 
 {% block content %}
 <div class = "dashboard-container">
+
+    <!-- Role Banner -->
+    <div class="bg-blue-100 border border-blue-300 text-blue-800 text-sm px-4 py-3 rounded mb-4" role="alert">
+        You are logged in as a <strong>{{ request.user.role|title }}</strong>.
+    </div>
      <h2>Hello <strong> Administrator </strong> {{ username }}, your current classes are:</h2>
 
     <div class = "card-container">
