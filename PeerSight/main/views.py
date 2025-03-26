@@ -1,7 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,  get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
+from django.forms import modelform_factory, modelformset_factory, inlineformset_factory
+from django.contrib.auth.decorators import login_required
+from .models import Form, Question, Choice
 
 
 # Create your views here.
@@ -60,3 +63,74 @@ def user_logout(request):
     logout(request) #logout the user
     return redirect("/") #return to signin page
 
+from django.shortcuts import render
+from django import forms
+
+FormForm = modelform_factory(Form, fields=['title'])
+
+# Create the form for the Question model (text + type)
+QuestionFormSet = modelformset_factory(Question, fields=('text', 'question_type'), extra=3)
+
+def create_form_view(request):
+    if request.method == 'POST':
+        form_form = FormForm(request.POST)
+        question_formset = QuestionFormSet(request.POST, queryset=Question.objects.none())
+
+        if form_form.is_valid() and question_formset.is_valid():
+            form_instance = form_form.save(commit=False)
+            form_instance.creator = request.user
+            form_instance.save()
+
+            for question_form in question_formset:
+                question = question_form.save(commit=False)
+                question.form = form_instance
+                question.save()
+
+                if question.question_type == 'mcq':
+                    choices_key = f'choices_{question_form.prefix}'
+                    choices = request.POST.getlist(choices_key)
+                    for choice_text in choices:
+                        if choice_text.strip():
+                            Choice.objects.create(question=question, text=choice_text.strip())
+
+            return redirect('admin_landing')  
+
+    else:
+        form_form = FormForm()
+        question_formset = QuestionFormSet(queryset=Question.objects.none())
+
+    return render(request, 'main/create_form.html', {
+    'form_form': form_form,
+    'question_formset': question_formset,
+})
+
+def manage_forms_view(request):
+    forms = Form.objects.filter(creator=request.user).order_by('-created_at')
+    return render(request, 'main/manage_forms.html', {'forms': forms})
+
+def form_detail_view(request, form_id):
+    form = get_object_or_404(Form, id=form_id, creator=request.user)
+    questions = form.questions.all()  # adjust this if you're using related_name
+    return render(request, 'main/form_detail.html', {
+        'form': form,
+        'questions': questions
+    })
+
+def fill_form_view(request, form_id):
+    form = get_object_or_404(Form, id=form_id)
+
+    questions = form.questions.all()
+
+    if request.method == 'POST':
+        responses = []
+        for question in questions:
+            answer = request.POST.get(f'question_{question.id}')
+            if answer is not None:
+                responses.append((question.text, answer))
+        # Do something with responses (e.g., save them)
+        return redirect('thank_you_page')  # or wherever you want
+    return render(request, 'main/fill_form.html', {'form': form, 'questions': questions})
+
+
+def thank_you_page(request):
+    return render(request, 'main/thank_you.html')

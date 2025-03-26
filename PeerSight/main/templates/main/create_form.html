@@ -1,0 +1,54 @@
+{% extends "main/base.html" %}
+{% load static %}
+
+{% block content %}
+<h1>Create a New Form</h1>
+
+<form method="post">
+    {% csrf_token %}
+
+    <h2>Form Title</h2>
+    {{ form_form.as_p }}
+
+    <h2>Questions</h2>
+    {{ question_formset.management_form }}
+
+    {% for form in question_formset %}
+        <div class="question-block">
+            {{ form.as_p }}
+            
+            <div class="mcq-choices" style="display: none;">
+                <label>Choices (one per line):</label><br>
+                <textarea name="choices_{{ form.prefix }}" rows="3" cols="40"></textarea>
+            </div>
+        </div>
+        <hr>
+    {% endfor %}
+
+    <button type="submit">Save Form</button>
+</form>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const questionBlocks = document.querySelectorAll('.question-block');
+
+        questionBlocks.forEach(block => {
+            const select = block.querySelector('select[name$="question_type"]');
+            const mcqChoices = block.querySelector('.mcq-choices');
+
+            const toggleMCQ = () => {
+                if (select.value === 'mcq') {
+                    mcqChoices.style.display = 'block';
+                } else {
+                    mcqChoices.style.display = 'none';
+                }
+            };
+
+            if (select) {
+                toggleMCQ();
+                select.addEventListener('change', toggleMCQ);
+            }
+        });
+    });
+</script>
+{% endblock %}

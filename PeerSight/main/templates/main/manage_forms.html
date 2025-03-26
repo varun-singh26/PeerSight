@@ -1,0 +1,21 @@
+_{% extends "main/base.html" %}
+{% block content %}
+<h1>Manage Your Forms</h1>
+
+{% if forms %}
+  <ul>
+    {% for form in forms %}
+      <li>
+        <strong>{{ form.title }}</strong> - created {{ form.created_at|date:"M d, Y" }}
+        <br>
+        <a href="{% url 'form_detail' form.id %}">View</a> |
+<a href="{% url 'fill_form' form.id %}">Fill</a>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>You haven’t created any forms yet. <a href="{% url 'create_form' %}">Make one now →</a></p>
+{% endif %}
+
+<a href="{% url 'create_form' %}">+ Create New Form</a>
+{% endblock %}
