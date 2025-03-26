@@ -68,7 +68,6 @@ from django import forms
 
 FormForm = modelform_factory(Form, fields=['title'])
 
-# Create the form for the Question model (text + type)
 QuestionFormSet = modelformset_factory(Question, fields=('text', 'question_type'), extra=3)
 
 def create_form_view(request):
@@ -110,7 +109,7 @@ def manage_forms_view(request):
 
 def form_detail_view(request, form_id):
     form = get_object_or_404(Form, id=form_id, creator=request.user)
-    questions = form.questions.all()  # adjust this if you're using related_name
+    questions = form.questions.all()  
     return render(request, 'main/form_detail.html', {
         'form': form,
         'questions': questions
@@ -127,8 +126,7 @@ def fill_form_view(request, form_id):
             answer = request.POST.get(f'question_{question.id}')
             if answer is not None:
                 responses.append((question.text, answer))
-        # Do something with responses (e.g., save them)
-        return redirect('thank_you_page')  # or wherever you want
+        return redirect('thank_you_page') 
     return render(request, 'main/fill_form.html', {'form': form, 'questions': questions})
 
 
