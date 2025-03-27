@@ -160,10 +160,13 @@ SOCIALACCOUNT_LOGIN_ON_GET = True
 SOCIALACCOUNT_AUTO_SIGNUP = True
 
 # django-allauth settings
-ACCOUNT_EMAIL_REQUIRED = True
+#ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*'] #replacing account_email_required
 ACCOUNT_EMAIL_VERIFICATION = 'none'  # Set to 'mandatory' if you want email verification
-ACCOUNT_LOGIN_METHODS = {'email'}
-ACCOUNT_USERNAME_REQUIRED = False
+#ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_LOGIN_METHODS = {'email'} #replacing account_authentication_methods
+#ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*'] #replacing account_username_required
 SOCIALACCOUNT_QUERY_EMAIL = True
 
 LOGIN_REDIRECT_URL = "/route_user/"
