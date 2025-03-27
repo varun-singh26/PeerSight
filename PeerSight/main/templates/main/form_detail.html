@@ -1,0 +1,28 @@
+{% extends "main/base.html" %}
+
+{% block content %}
+  <h1>{{ form.title }}</h1>
+  <p><strong>Created:</strong> {{ form.created_at|date:"M d, Y" }}</p>
+
+  <hr>
+
+  <h2>Questions:</h2>
+  <ol>
+    {% for question in questions %}
+      <li>
+        {{ question.text }} ({{ question.get_question_type_display }})
+        {% if question.question_type == 'mcq' %}
+          <ul>
+            {% for choice in question.choices.all %}
+              <li>{{ choice.text }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </li>
+    {% empty %}
+      <li>No questions added to this form.</li>
+    {% endfor %}
+  </ol>
+
+  <a href="{% url 'manage_forms' %}">← Back to Manage Forms</a>
+{% endblock %}

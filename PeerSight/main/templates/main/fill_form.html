@@ -1,0 +1,26 @@
+{% extends "main/base.html" %}
+{% block content %}
+<h1>{{ form.title }}</h1>
+<p><strong>Instructions:</strong> Fill out the form below</p>
+
+<form method="post">
+  {% csrf_token %}
+  {% for question in questions %}
+    <p><strong>{{ question.text }}</strong></p>
+
+    {% if question.question_type == "likert" %}
+      {% for i in "12345" %}
+        <label>
+          <input type="radio" name="question_{{ question.id }}" value="{{ i }}">
+          {{ i }}
+        </label>
+      {% endfor %}
+    {% elif question.question_type == "multiple_choice" %}
+      <input type="text" name="question_{{ question.id }}" placeholder="Your answer">
+    {% endif %}
+  {% endfor %}
+
+  <button type="submit">Submit</button>
+</form>
+
+{% endblock %}
