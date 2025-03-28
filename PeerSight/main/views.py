@@ -132,3 +132,6 @@ def fill_form_view(request, form_id):
 
 def thank_you_page(request):
     return render(request, 'main/thank_you.html')
+
+def course_modification(request):
+    return render(request, 'main/course_modification.html')

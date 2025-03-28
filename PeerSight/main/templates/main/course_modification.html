@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Course Modification</title>
+  </head>
+
+{% extends "main/base.html" %}
+
+{% block extra_head %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'main/css/courseModificationStyles.css' %}">
+{% endblock %}
+
+<!--Administrator sidebar-->
+{% block nav %}
+<nav
+    class="flex flex-col gap-2 px-0 py-5 h-screen bg-gray-800 w-[300px] max-md:w-[250px] max-sm:p-2.5 max-sm:w-full max-sm:h-auto"
+    id="sidebar"
+>
+    <ul class="w-full">
+        <li>
+          <a
+            href="#"
+            class="flex gap-4 items-center px-6 py-3 cursor-pointer duration-[0.2s] transition-[background-color] hover:bg-gray-700 max-md:px-5 max-md:py-2.5 max-sm:px-4 max-sm:py-3"
+            data-nav-item
+          >
+            <i class="ti ti-home text-2xl text-white"></i>
+            <span class="text-base font-medium text-white max-md:text-sm"
+              >Admin Dashboard</span
+            >
+          </a>
+        </li>
+        <li>
+          <a
+            href="#"
+            class="flex gap-4 items-center px-6 py-3 cursor-pointer duration-[0.2s] transition-[background-color] hover:bg-gray-700 max-md:px-5 max-md:py-2.5 max-sm:px-4 max-sm:py-3"
+            data-nav-item
+          >
+            <i class="ti ti-book text-2xl text-white"></i>
+            <span class="text-base font-medium text-white max-md:text-sm"
+              >Your Classes</span
+            >
+          </a>
+        </li>
+        <li>
+          <a
+            href="#"
+            class="flex gap-4 items-center px-6 py-3 cursor-pointer duration-[0.2s] transition-[background-color] hover:bg-gray-700 max-md:px-5 max-md:py-2.5 max-sm:px-4 max-sm:py-3"
+            data-nav-item
+          >
+            <i class="ti ti-layout-grid text-2xl text-white"></i>
+            <span class="text-base font-medium text-white max-md:text-sm"
+              >Your Sections</span
+            >
+          </a>
+        </li>
+        <li>
+          <a
+            href="#"
+            class="flex gap-4 items-center px-6 py-3 cursor-pointer duration-[0.2s] transition-[background-color] hover:bg-gray-700 max-md:px-5 max-md:py-2.5 max-sm:px-4 max-sm:py-3"
+            data-nav-item
+          >
+            <i class="ti ti-users text-2xl text-white"></i>
+            <span class="text-base font-medium text-white max-md:text-sm"
+              >Manage Teams</span
+            >
+          </a>
+        </li>
+        <li>
+          <a
+          href="{% url 'manage_forms' %}"
+            class="flex gap-4 items-center px-6 py-3 cursor-pointer duration-[0.2s] transition-[background-color] hover:bg-gray-700 max-md:px-5 max-md:py-2.5 max-sm:px-4 max-sm:py-3"
+            data-nav-item
+          >
+            <i class="ti ti-list text-2xl text-white"></i>
+            <span class="text-base font-medium text-white max-md:text-sm"
+              >Manage Forms</span
+            >
+          </a>
+        </li>
+        <li>
+          <a
+          href="{% url 'create_form' %}"
+            class="flex gap-4 items-center px-6 py-3 cursor-pointer duration-[0.2s] transition-[background-color] hover:bg-gray-700 max-md:px-5 max-md:py-2.5 max-sm:px-4 max-sm:py-3"
+            data-nav-item
+          >
+            <i class="ti ti-plus text-2xl text-white"></i>
+            <span class="text-base font-medium text-white max-md:text-sm"
+              >Create Form</span
+            >
+          </a>
+        </li>
+        <li>
+          <a
+            href="#"
+            class="flex gap-4 items-center px-6 py-3 cursor-pointer duration-[0.2s] transition-[background-color] hover:bg-gray-700 max-md:px-5 max-md:py-2.5 max-sm:px-4 max-sm:py-3"
+            data-nav-item
+          >
+            <i class="ti ti-chart-dots text-2xl text-white"></i>
+            <span class="text-base font-medium text-white max-md:text-sm"
+              >View/Evaluate Responses</span
+            >
+          </a>
+        </li>
+        <li>
+          <a
+            href="#"
+            class="flex gap-4 items-center px-6 py-3 cursor-pointer duration-[0.2s] transition-[background-color] hover:bg-gray-700 max-md:px-5 max-md:py-2.5 max-sm:px-4 max-sm:py-3"
+            data-nav-item
+          >
+            <i class="ti ti-mail text-2xl text-white"></i>
+            <span class="text-base font-medium text-white max-md:text-sm"
+              >Manage Reminders</span
+            >
+          </a>
+        </li>
+    </ul>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class = "container">
+    <h2>Modify [Course Name, ID]</h2>
+    <button class = "exit-button"> Exit Course Modification</button>
+     <!-- Flex container to hold all sections -->
+     <div class="form-container">
+      <!-- Course Details Form -->
+      <section class="course-details">
+        <h1 class="course-details__title">Course Details</h1>
+        <form class="course-details__form">
+          <div class="course-details__input-group">
+            <label for="course-title" class="course-details__label">Course Title</label>
+            <input id="course-title" type="text" placeholder="Enter course title" class="course-details__input" />
+          </div>
+          <div class="course-details__input-group">
+            <label for="course-id" class="course-details__label">Course ID Number</label>
+            <input id="course-id" type="text" placeholder="Enter course ID" class="course-details__input" />
+          </div>
+          <div class="course-details__input-group">
+            <label for="section" class="course-details__label">Section</label>
+            <input id="section" type="text" placeholder="Enter section" class="course-details__input" />
+          </div>
+          <div class="course-details__input-group">
+            <label for="semester" class="course-details__label">Semester</label>
+            <select id="semester" class="course-details__input">
+              <option>Fall</option>
+              <option>Spring</option>
+            </select>
+          </div>
+          <div class="course-details__input-group">
+            <label for="year" class="course-details__label">Year</label>
+            <input id="year" type="number" placeholder="Enter year" class="course-details__input" />
+          </div>
+        </form>
+      </section>
+
+      <!-- Right Side Container: Add Students and Add Students to Teams -->
+      <div class="right-side">
+        
+        <!-- Add Students Form -->
+        <section class="add-students">
+          <h1 class="add-students__title">Add Students to This Course</h1>
+          <div class = "student-container"> 
+              <div class = ".student-info">
+                <p>👤 Alice Anderson</p>
+                <p>👤 Bob Brown</p>
+                <p>👤 Charlie Clark</p>
+              </div>
+              <div class = ".student-info">
+                <p>alice.anderson@example.com</p>
+                <p>bob.brown@example.com</p>
+                <p>charlie.clark@example.com</p>
+              </div>
+          </div>
+        </section>
+
+        <!-- Add Students to Teams Form -->
+        <section class="add-students-to-teams">
+          <h1 class="add-students-to-teams__title">Assign Students to Teams/Groups</h1>
+          <div class = "team-container">
+            <div class = "team-card"> 
+                <span class = "team-name">Team 1</span>
+                <span class = "team-member">Alice Anderson</span>
+                <span class = "team-member">Bob Brown</span>
+                <span class = "team-member">Charlie Clark</span>
+                <button class="action-button">+</button>
+            </div>
+            <div class = "team-card"> 
+              <span class = "team-name">Team 2</span>
+              <span class = "team-member">Person 1</span>
+              <span class = "team-member">Person 2</span>
+              <span class = "team-member">Person 3</span>
+              <button class="action-button">+</button>
+            </div>
+          </div>
+        </section>
+        
+      </div> <!-- End of Right Side -->
+
+    </div> <!-- End of Form Container -->
+    <button class = "save-button">Save Changes</button>
+  </div> <!-- End of Dashboard Container -->
+
+{% endblock %}
+
+</html>

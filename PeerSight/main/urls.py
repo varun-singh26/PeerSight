@@ -17,6 +17,7 @@ urlpatterns = [
     path("forms/<int:form_id>/", views.form_detail_view, name='form_detail'),
     path("forms/<int:form_id>/fill/", views.fill_form_view, name="fill_form"),
     path('thank-you/', views.thank_you_page, name='thank_you_page'),
+    path("course-modification/", views.course_modification, name='course_modification'),
 
 
 
