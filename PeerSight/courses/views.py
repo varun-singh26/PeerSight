@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Course, Student
+from .models import Course, Student, Team
 from main.decorators import professor_required
 
 # Create your views here.
@@ -8,20 +8,35 @@ from main.decorators import professor_required
 def add_student_view(request, course_id):
     course = get_object_or_404(Course, id=course_id, creator=request.user)
     
+    teams = course.teams.all()
+
     if request.method == 'POST':
        name = request.POST['name']
        student_id = request.POST['student_id']
        graduation_year = request.POST['graduation_year']
        email = request.POST['email']
+       team_id = request.POST.get('team')
+       new_team_name = request.POST.get('new_team_name') 
 
        student, created = Student.objects.get_or_create(
            student_id=student_id,
            defaults={'name': name, 'graduation_year': graduation_year, 'email': email}
        )
        student.courses.add(course)
+       
+       if new_team_name:
+            team = Team.objects.create(course=course, name=new_team_name)
+            team.members.add(student)  # Add student to the new team
+       if team_id:
+            team = get_object_or_404(Team, id=team_id, course=course)
+            team.members.add(student)
+
        return redirect('courses:course_detail', course_id=course.id)
     
-    return render(request, "courses/add_student.html", {'course': course})
+    return render(request, "courses/add_student.html", {
+        'course': course,
+        'teams': teams
+    })
 
 @professor_required
 def course_detail_view(request, course_id):

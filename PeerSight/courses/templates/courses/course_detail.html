@@ -109,7 +109,7 @@
 {% endblock %}
 
 {% block content %}
-<div class="max-w-4xl mx-auto bg-white shadow-md rounded-xl p-6">
+<div class="max-w-4xl mx-auto bg-white shadow-md rounded-xl p-6 mt-12">
     <h1 class="text-3xl font-bold mb-2">{{ course.name }}</h1>
     <p class="text-gray-700">{{ course.subject }} | {{ course.semester }} | Section {{ course.section }}</p>
     <p class="text-sm text-gray-500 mt-1">Course ID: {{ course.course_id }}</p>
@@ -118,12 +118,12 @@
 
     <div class="flex justify-between items-center">
       <h2 class="text-xl font-semibold">Enrolled Students</h2>
-      <a href="{% url 'courses:add_student' course.id %}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+      <a href="{% url 'courses:add_student' course.id %}" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 bg-[#34A853]">
         Add Student
       </a>
     </div>
 
-    <ul class="mt-4 space-y-2">
+    <ul class="mt-4 space-y-2 mb-4">
       {% for student in students %}
         <li class="bg-gray-100 p-3 rounded">{{ student.name }} — {{ student.student_id }} ({{ student.email }})</li>
       {% empty %}

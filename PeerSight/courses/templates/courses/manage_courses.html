@@ -109,16 +109,18 @@
 {% endblock %}
 
 {% block content %}
+<h1 class="text-3xl font-bold mb-5 mt-8 ml-8">Manage Courses</h1>
+<hr class="my-4 border-t-3.5" />
 <!-- Button to open modal -->
 <button
   onclick="document.getElementById('create-course-modal').classList.remove('hidden')"
-  class="flex items-center justify-center w-[150px] h-[50px] bg-zinc-900 border-black border-[7px] rounded-3xl text-white text-3xl font-bold"
+  class="flex items-center justify-center w-[150px] h-[50px] bg-zinc-900 border-black border-[7px] rounded-3xl text-white text-3xl font-bold ml-auto mr-4"
 >
   +
 </button>
 
 <!-- Display courses -->
-<div class="mt-6 space-y-4">
+<div class="mt-5 mr-5 ml-5 space-y-4">
   {% if courses %}
     {% for course in courses %}
       <a href="{% url 'courses:course_detail' course.id %}" class="block bg-white text-black p-4 rounded-xl shadow-md hover:bg-gray-100 transition">
