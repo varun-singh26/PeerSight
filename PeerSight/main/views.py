@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.forms import modelform_factory, modelformset_factory, inlineformset_factory
 from django.contrib.auth.decorators import login_required
 from .models import Form, Question, Choice
-from courses.models import Course
+from courses.models import Course, Team
 
 # Create your views here.
 
@@ -63,45 +63,66 @@ def user_logout(request):
     logout(request) #logout the user
     return redirect("/") #return to signin page
 
-from django.shortcuts import render
-from django import forms
-
 FormForm = modelform_factory(Form, fields=['title'])
+QuestionFormSet = modelformset_factory(Question, fields=('question_text', 'question_type'), extra=3)
 
-QuestionFormSet = modelformset_factory(Question, fields=('text', 'question_type'), extra=3)
-
+@login_required
 def create_form_view(request):
     if request.method == 'POST':
-        form_form = FormForm(request.POST)
-        question_formset = QuestionFormSet(request.POST, queryset=Question.objects.none())
+        # Get the deadline value, only set it if it's not empty
+        deadline = request.POST.get('deadline')
+        if not deadline:
+            deadline = None
 
-        if form_form.is_valid() and question_formset.is_valid():
-            form_instance = form_form.save(commit=False)
-            form_instance.creator = request.user
-            form_instance.save()
-
-            for question_form in question_formset:
-                question = question_form.save(commit=False)
-                question.form = form_instance
-                question.save()
-
-                if question.question_type == 'mcq':
-                    choices_key = f'choices_{question_form.prefix}'
-                    choices = request.POST.getlist(choices_key)
-                    for choice_text in choices:
-                        if choice_text.strip():
-                            Choice.objects.create(question=question, text=choice_text.strip())
-
-            return redirect('admin_landing')  
-
-    else:
-        form_form = FormForm()
-        question_formset = QuestionFormSet(queryset=Question.objects.none())
-
+        form_instance = Form.objects.create(
+            title=request.POST.get('title'),
+            description=request.POST.get('description'),
+            deadline=deadline,
+            course_id=request.POST.get('course'),
+            creator=request.user
+        )
+        
+        # Save selected teams
+        selected_teams = request.POST.getlist('teams')
+        form_instance.teams.set(selected_teams)
+        
+        # Save questions and their choices
+        for key, value in request.POST.items():
+            if key.startswith('question_text_'):
+                question_number = key.split('_')[2]
+                question_type = request.POST.get(f'question_type_{question_number}')
+                
+                # Convert checkbox value to boolean
+                required = request.POST.get(f'required_{question_number}') == 'on'
+                
+                question = Question.objects.create(
+                    form=form_instance,
+                    question_text=value,
+                    question_type=question_type,
+                    required=required,
+                    order=int(question_number)
+                )
+                
+                if question_type == 'mcq':
+                    choices_text = request.POST.get(f'choices_{question_number}')
+                    if choices_text:
+                        for choice_text in choices_text.split('\n'):
+                            if choice_text.strip():
+                                Choice.objects.create(
+                                    question=question,
+                                    choice_text=choice_text.strip()
+                                )
+        
+        return redirect('manage_forms')
+    
+    # Get all courses and teams for the template
+    courses = Course.objects.all()
+    teams = Team.objects.all()
+    
     return render(request, 'main/create_form.html', {
-    'form_form': form_form,
-    'question_formset': question_formset,
-})
+        'courses': courses,
+        'teams': teams
+    })
 
 def manage_forms_view(request):
     forms = Form.objects.filter(creator=request.user).order_by('-created_at')
@@ -125,10 +146,9 @@ def fill_form_view(request, form_id):
         for question in questions:
             answer = request.POST.get(f'question_{question.id}')
             if answer is not None:
-                responses.append((question.text, answer))
+                responses.append((question.question_text, answer))
         return redirect('thank_you_page') 
     return render(request, 'main/fill_form.html', {'form': form, 'questions': questions})
-
 
 def thank_you_page(request):
     return render(request, 'main/thank_you.html')
