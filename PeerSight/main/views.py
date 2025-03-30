@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.forms import modelform_factory, modelformset_factory, inlineformset_factory
 from django.contrib.auth.decorators import login_required
 from .models import Form, Question, Choice
-
+from courses.models import Course
 
 # Create your views here.
 
@@ -132,6 +132,3 @@ def fill_form_view(request, form_id):
 
 def thank_you_page(request):
     return render(request, 'main/thank_you.html')
-
-def course_modification(request):
-    return render(request, 'main/course_modification.html')

@@ -42,11 +42,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     "main.apps.MainConfig", #This is the main app that we created. We need to add this to the installed apps list (dependent on whatever you name the app)
     "users",                 #This is the users app that we created. We need to add this to the installed apps list (dependent on whatever you name the app)
+    "courses",
     "django.contrib.sites", 
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
-    "allauth.socialaccount.providers.google" 
+    "allauth.socialaccount.providers.google",
+    "tailwind",
 ]
 
 SOCIALACCOUNT_PROVIDERS = {
@@ -160,13 +162,12 @@ SOCIALACCOUNT_LOGIN_ON_GET = True
 SOCIALACCOUNT_AUTO_SIGNUP = True
 
 # django-allauth settings
-#ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*'] #replacing account_email_required
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*'] #replacing account_username_required
 ACCOUNT_EMAIL_VERIFICATION = 'none'  # Set to 'mandatory' if you want email verification
 #ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_LOGIN_METHODS = {'email'} #replacing account_authentication_methods
 #ACCOUNT_USERNAME_REQUIRED = False
-ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*'] #replacing account_username_required
 SOCIALACCOUNT_QUERY_EMAIL = True
 
 LOGIN_REDIRECT_URL = "/route_user/"
@@ -175,4 +176,9 @@ LOGOUT_REDIRECT_URL = "/"
 # Force Auto-Signup Without Confirmation
 ACCOUNT_ADAPTER = "users.adapter.CustomAccountAdapter"
 SOCIALACCOUNT_ADAPTER = "users.adapter.CustomSocialAccountAdapter"
+
+
+TAILWIND_APP_NAME = 'theme'
+INTERNAL_IPS = ['127.0.0.1'] # This is for the Django Debug Toolbar
+
 
