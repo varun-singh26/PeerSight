@@ -3,7 +3,7 @@
 
 {% block content %}
 <div class="min-h-screen bg-gradient-to-b from-stone-300 to-stone-300 p-8">
-    <form method="post">
+    <form method="post" id="createForm">
         {% csrf_token %}
         <!-- Top Half -->
         <div class="h-[50vh] flex gap-8 mb-8">
@@ -30,7 +30,7 @@
                 <div class="w-full h-[120px] bg-zinc-900 bg-opacity-75 rounded-3xl outline outline-8 outline-offset-[-7px] outline-black">
                     <div class="p-4">
                         <h2 class="text-white text-3xl font-['Poppins']">Select Class:</h2>
-                        <select name="course" class="mt-2 w-full bg-transparent text-white text-xl font-['Poppins'] border border-white rounded-lg p-2">
+                        <select name="course" class="mt-2 w-full bg-transparent text-zinc-900 text-xl font-['Poppins'] border border-white rounded-lg p-2">
                             <option value="">Choose a class...</option>
                             {% for course in courses %}
                                 <option value="{{ course.id }}">{{ course.name }}</option>
@@ -67,39 +67,14 @@
         </div>
 
         <!-- Bottom Half - Questions -->
-        <div class="h-[50vh] overflow-y-auto">
-            {% for i in "123" %}
-                <div class="question-block w-full bg-white rounded-3xl outline outline-[5px] outline-offset-[-5px] outline-black p-6 mb-4">
-                    <div class="space-y-4">
-                        <div>
-                            <label class="text-neutral-400 text-2xl font-['Poppins']">Question Text:</label><br>
-                            <input type="text" name="question_text_{{ i }}" class="w-full mt-2 p-2 border border-neutral-400 rounded-lg" placeholder="Enter your question">
-                        </div>
-                        
-                        <div>
-                            <label class="text-neutral-400 text-2xl font-['Poppins']">Question Type:</label><br>
-                            <select name="question_type_{{ i }}" class="w-full mt-2 p-2 border border-neutral-400 rounded-lg">
-                                <option value="text">Text</option>
-                                <option value="mcq">Multiple Choice</option>
-                                <option value="rating">Rating</option>
-                            </select>
-                        </div>
+        <div class="h-[50vh] overflow-y-auto" id="questionsContainer">
+            <!-- Questions will be added here -->
+        </div>
 
-                        <div>
-                            <label class="flex items-center text-neutral-400 text-2xl font-['Poppins']">
-                                <input type="checkbox" name="required_{{ i }}" checked class="mr-2">
-                                Required
-                            </label>
-                        </div>
-                    </div>
-                    
-                    <div class="mcq-choices hidden mt-4">
-                        <label class="text-neutral-400 text-2xl font-['Poppins']">Choices (one per line):</label><br>
-                        <textarea name="choices_{{ i }}" rows="3" class="w-full mt-2 p-2 border border-neutral-400 rounded-lg"></textarea>
-                    </div>
-                </div>
-            {% endfor %}
-
+        <div class="flex justify-between items-center mt-4">
+            <button type="button" id="addQuestionBtn" class="bg-zinc-900 text-white px-6 py-3 rounded-lg text-xl font-['Poppins'] hover:bg-opacity-90 transition-all">
+                + Add Question
+            </button>
             <button type="submit" class="bg-zinc-900 text-white px-8 py-3 rounded-lg text-xl font-['Poppins'] hover:bg-opacity-90 transition-all">
                 Save Form
             </button>
@@ -108,25 +83,48 @@
 </div>
 
 <script>
+    let questionCount = 0;
+
+    function createQuestionBlock() {
+        questionCount++;
+        const questionBlock = document.createElement('div');
+        questionBlock.className = 'question-block w-full bg-white rounded-3xl outline outline-[5px] outline-offset-[-5px] outline-black p-6 mb-4';
+        questionBlock.innerHTML = `
+            <div class="space-y-4">
+                <div>
+                    <label class="text-neutral-400 text-2xl font-['Poppins']">Question Text:</label><br>
+                    <input type="text" name="question_text_${questionCount}" class="w-full mt-2 p-2 border border-neutral-400 rounded-lg" placeholder="Enter your question">
+                </div>
+                
+                <div>
+                    <label class="text-neutral-400 text-2xl font-['Poppins']">Question Type:</label><br>
+                    <select name="question_type_${questionCount}" class="w-full mt-2 p-2 border border-neutral-400 rounded-lg">
+                        <option value="text">Short Answer</option>
+                        <option value="likert">Likert</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="flex items-center text-neutral-400 text-2xl font-['Poppins']">
+                        <input type="checkbox" name="required_${questionCount}" checked class="mr-2">
+                        Required
+                    </label>
+                </div>
+            </div>
+        `;
+        return questionBlock;
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
-        const questionBlocks = document.querySelectorAll('.question-block');
+        const questionsContainer = document.getElementById('questionsContainer');
+        const addQuestionBtn = document.getElementById('addQuestionBtn');
 
-        questionBlocks.forEach(block => {
-            const select = block.querySelector('select[name$="question_type"]');
-            const mcqChoices = block.querySelector('.mcq-choices');
+        // Add initial question
+        questionsContainer.appendChild(createQuestionBlock());
 
-            const toggleMCQ = () => {
-                if (select.value === 'mcq') {
-                    mcqChoices.classList.remove('hidden');
-                } else {
-                    mcqChoices.classList.add('hidden');
-                }
-            };
-
-            if (select) {
-                toggleMCQ();
-                select.addEventListener('change', toggleMCQ);
-            }
+        // Add question button click handler
+        addQuestionBtn.addEventListener('click', function() {
+            questionsContainer.appendChild(createQuestionBlock());
         });
     });
 </script>

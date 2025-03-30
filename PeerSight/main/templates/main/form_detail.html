@@ -1,28 +1,95 @@
 {% extends "main/base.html" %}
+{% load static %}
 
 {% block content %}
-  <h1>{{ form.title }}</h1>
-  <p><strong>Created:</strong> {{ form.created_at|date:"M d, Y" }}</p>
+<div class="min-h-screen bg-gradient-to-b from-stone-300 to-stone-300 p-8">
+    <div class="max-w-4xl mx-auto">
+        <!-- Form Header -->
+        <div class="bg-zinc-900 bg-opacity-75 rounded-3xl outline outline-8 outline-offset-[-7px] outline-black p-8 mb-8">
+            <h1 class="text-4xl font-['Poppins'] text-white mb-4">{{ form.title }}</h1>
+            <p class="text-white text-xl font-['Poppins']">{{ form.description }}</p>
+            <div class="mt-4 text-white text-lg font-['Poppins']">
+                <p>Course: {{ form.course.name }}</p>
+                <p>Created: {{ form.created_at|date:"M d, Y" }}</p>
+                {% if form.deadline %}
+                    <p>Deadline: {{ form.deadline|date:"M d, Y H:i" }}</p>
+                {% endif %}
+            </div>
+        </div>
 
-  <hr>
+        <!-- Questions -->
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+            {% for question in questions %}
+                <div class="bg-white rounded-3xl outline outline-[5px] outline-offset-[-5px] outline-black p-6">
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-start">
+                            <h3 class="text-2xl font-['Poppins'] text-zinc-900">{{ question.question_text }}</h3>
+                            {% if question.required %}
+                                <span class="text-red-500 text-sm font-['Poppins']">Required</span>
+                            {% endif %}
+                        </div>
 
-  <h2>Questions:</h2>
-  <ol>
-    {% for question in questions %}
-      <li>
-        {{ question.text }} ({{ question.get_question_type_display }})
-        {% if question.question_type == 'mcq' %}
-          <ul>
-            {% for choice in question.choices.all %}
-              <li>{{ choice.text }}</li>
+                        {% if question.question_type == 'text' %}
+                            <!-- Short Answer Input -->
+                            <textarea 
+                                name="answer_{{ question.id }}" 
+                                class="w-full p-3 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-zinc-900"
+                                rows="3"
+                                placeholder="Enter your answer here..."
+                                {% if question.required %}required{% endif %}
+                            ></textarea>
+
+                        {% elif question.question_type == 'likert' %}
+                            <!-- Likert Scale -->
+                            <div class="flex justify-between items-center space-x-4">
+                                <div class="flex-1 text-center">
+                                    <input type="radio" name="answer_{{ question.id }}" value="1" id="likert1_{{ question.id }}" class="hidden peer" {% if question.required %}required{% endif %}>
+                                    <label for="likert1_{{ question.id }}" class="block p-4 border border-neutral-300 rounded-lg cursor-pointer hover:bg-zinc-50 peer-checked:bg-zinc-900 peer-checked:text-white">
+                                        <span class="text-lg font-['Poppins']">1</span>
+                                        <span class="block text-sm">Strongly Disagree</span>
+                                    </label>
+                                </div>
+                                <div class="flex-1 text-center">
+                                    <input type="radio" name="answer_{{ question.id }}" value="2" id="likert2_{{ question.id }}" class="hidden peer" {% if question.required %}required{% endif %}>
+                                    <label for="likert2_{{ question.id }}" class="block p-4 border border-neutral-300 rounded-lg cursor-pointer hover:bg-zinc-50 peer-checked:bg-zinc-900 peer-checked:text-white">
+                                        <span class="text-lg font-['Poppins']">2</span>
+                                        <span class="block text-sm">Disagree</span>
+                                    </label>
+                                </div>
+                                <div class="flex-1 text-center">
+                                    <input type="radio" name="answer_{{ question.id }}" value="3" id="likert3_{{ question.id }}" class="hidden peer" {% if question.required %}required{% endif %}>
+                                    <label for="likert3_{{ question.id }}" class="block p-4 border border-neutral-300 rounded-lg cursor-pointer hover:bg-zinc-50 peer-checked:bg-zinc-900 peer-checked:text-white">
+                                        <span class="text-lg font-['Poppins']">3</span>
+                                        <span class="block text-sm">Neutral</span>
+                                    </label>
+                                </div>
+                                <div class="flex-1 text-center">
+                                    <input type="radio" name="answer_{{ question.id }}" value="4" id="likert4_{{ question.id }}" class="hidden peer" {% if question.required %}required{% endif %}>
+                                    <label for="likert4_{{ question.id }}" class="block p-4 border border-neutral-300 rounded-lg cursor-pointer hover:bg-zinc-50 peer-checked:bg-zinc-900 peer-checked:text-white">
+                                        <span class="text-lg font-['Poppins']">4</span>
+                                        <span class="block text-sm">Agree</span>
+                                    </label>
+                                </div>
+                                <div class="flex-1 text-center">
+                                    <input type="radio" name="answer_{{ question.id }}" value="5" id="likert5_{{ question.id }}" class="hidden peer" {% if question.required %}required{% endif %}>
+                                    <label for="likert5_{{ question.id }}" class="block p-4 border border-neutral-300 rounded-lg cursor-pointer hover:bg-zinc-50 peer-checked:bg-zinc-900 peer-checked:text-white">
+                                        <span class="text-lg font-['Poppins']">5</span>
+                                        <span class="block text-sm">Strongly Agree</span>
+                                    </label>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
             {% endfor %}
-          </ul>
-        {% endif %}
-      </li>
-    {% empty %}
-      <li>No questions added to this form.</li>
-    {% endfor %}
-  </ol>
 
-  <a href="{% url 'manage_forms' %}">← Back to Manage Forms</a>
+            <div class="flex justify-end">
+                <button type="submit" class="bg-zinc-900 text-white px-8 py-3 rounded-lg text-xl font-['Poppins'] hover:bg-opacity-90 transition-all">
+                    Submit Form
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
 {% endblock %}

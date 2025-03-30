@@ -17,8 +17,7 @@ class Form(models.Model):
 
 class Question(models.Model):
     QUESTION_TYPES = [
-        ('text', 'Text'),
-        ('mcq', 'Multiple Choice'),
+        ('text', 'Short Answer'),
         ('likert', 'Likert'),
     ]
 

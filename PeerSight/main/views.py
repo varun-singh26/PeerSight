@@ -86,7 +86,7 @@ def create_form_view(request):
         selected_teams = request.POST.getlist('teams')
         form_instance.teams.set(selected_teams)
         
-        # Save questions and their choices
+        # Save questions
         for key, value in request.POST.items():
             if key.startswith('question_text_'):
                 question_number = key.split('_')[2]
@@ -95,23 +95,13 @@ def create_form_view(request):
                 # Convert checkbox value to boolean
                 required = request.POST.get(f'required_{question_number}') == 'on'
                 
-                question = Question.objects.create(
+                Question.objects.create(
                     form=form_instance,
                     question_text=value,
                     question_type=question_type,
                     required=required,
                     order=int(question_number)
                 )
-                
-                if question_type == 'mcq':
-                    choices_text = request.POST.get(f'choices_{question_number}')
-                    if choices_text:
-                        for choice_text in choices_text.split('\n'):
-                            if choice_text.strip():
-                                Choice.objects.create(
-                                    question=question,
-                                    choice_text=choice_text.strip()
-                                )
         
         return redirect('manage_forms')
     
