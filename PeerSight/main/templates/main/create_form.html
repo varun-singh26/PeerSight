@@ -101,7 +101,13 @@
                     <select name="question_type_${questionCount}" class="w-full mt-2 p-2 border border-neutral-400 rounded-lg">
                         <option value="text">Short Answer</option>
                         <option value="likert">Likert</option>
+                        <option value="multiple_choice">Multiple Choice</option>
                     </select>
+                </div>
+
+                <div class="multiple-choice-options" style="display: none;">
+                    <label class="text-neutral-400 text-2xl font-['Poppins']">Options (one per line):</label><br>
+                    <textarea name="choices_${questionCount}" class="w-full mt-2 p-2 border border-neutral-400 rounded-lg" rows="4" placeholder="Enter options, one per line"></textarea>
                 </div>
 
                 <div>
@@ -112,6 +118,15 @@
                 </div>
             </div>
         `;
+
+        // Add event listener for question type change
+        const typeSelect = questionBlock.querySelector(`select[name="question_type_${questionCount}"]`);
+        const optionsDiv = questionBlock.querySelector('.multiple-choice-options');
+        
+        typeSelect.addEventListener('change', function() {
+            optionsDiv.style.display = this.value === 'multiple_choice' ? 'block' : 'none';
+        });
+
         return questionBlock;
     }
 

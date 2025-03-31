@@ -79,6 +79,17 @@
                                     </label>
                                 </div>
                             </div>
+
+                        {% elif question.question_type == 'multiple_choice' %}
+                            <!-- Multiple Choice -->
+                            <div class="space-y-3">
+                                {% for choice in question.choices.all %}
+                                    <label class="flex items-center p-4 border border-neutral-300 rounded-lg cursor-pointer hover:bg-zinc-50">
+                                        <input type="radio" name="answer_{{ question.id }}" value="{{ choice.id }}" class="hidden peer" {% if question.required %}required{% endif %}>
+                                        <span class="w-full text-lg font-['Poppins'] peer-checked:text-zinc-900">{{ choice.choice_text }}</span>
+                                    </label>
+                                {% endfor %}
+                            </div>
                         {% endif %}
                     </div>
                 </div>
