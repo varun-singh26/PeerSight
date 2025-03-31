@@ -1,26 +1,51 @@
 {% extends "main/base.html" %}
+{% load static %}
+
 {% block content %}
-<h1>{{ form.title }}</h1>
-<p><strong>Instructions:</strong> Fill out the form below</p>
+<div class="w-full flex justify-center py-10 bg-gray-100 min-h-screen">
+    <div class="w-3/4 bg-white shadow rounded-lg p-6 mb-6">
 
-<form method="post">
-  {% csrf_token %}
-  {% for question in questions %}
-    <p><strong>{{ question.text }}</strong></p>
+        <h1 class="text-3xl font-bold mb-4">{{ form.title }}</h1>
+        <p class="text-lg font-semibold text-gray-700 mb-4">Instructions: Fill out the form below</p>
 
-    {% if question.question_type == "likert" %}
-      {% for i in "12345" %}
-        <label>
-          <input type="radio" name="question_{{ question.id }}" value="{{ i }}">
-          {{ i }}
-        </label>
-      {% endfor %}
-    {% elif question.question_type == "multiple_choice" %}
-      <input type="text" name="question_{{ question.id }}" placeholder="Your answer">
-    {% endif %}
-  {% endfor %}
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+            {% for question in questions %}
+                <div class="mb-4 p-4 bg-gray-200 rounded-lg shadow-md">
+                    <!-- Display the question name correctly -->
+                    <p class="font-bold mb-2">{{ question.question_text }}</p> 
 
-  <button type="submit">Submit</button>
-</form>
+                    <!-- Likert Scale Handling -->
+                    {% if question.question_type == "likert" %}
+                        <div class="flex space-x-4">
+                            {% for i in "12345" %}
+                                <label class="flex items-center space-x-2">
+                                    <input type="radio" name="question_{{ question.id }}" value="{{ i }}" class="form-radio text-blue-600">
+                                    <span>{{ i }}</span>
+                                </label>
+                            {% endfor %}
+                        </div>
+                        
+                    <!-- Multiple Choice Handling -->
+                    {% elif question.question_type == "multiple_choice" %}
+                        <div class="flex flex-col space-y-2">
+                            {% for choice in question.choices.all %}
+                                <label class="flex items-center space-x-2">
+                                    <input type="radio" name="question_{{ question.id }}" value="{{ choice.choice_text }}" class="form-radio text-blue-600">
+                                    <span>{{ choice.choice_text }}</span>
+                                </label>
+                            {% endfor %}
+                        </div>
 
+                    <!-- Short Answer Handling -->
+                    {% elif question.question_type == "text" %}
+                        <input type="text" name="question_{{ question.id }}" placeholder="Your answer" class="w-full p-2 mt-2 rounded border border-gray-300">
+                    {% endif %}
+                </div>
+            {% endfor %}
+            
+            <button type="submit" class="bg-blue-500 text-white py-2 px-6 rounded-lg hover:bg-blue-600 transition">Submit</button>
+        </form>
+    </div>
+</div>
 {% endblock %}
