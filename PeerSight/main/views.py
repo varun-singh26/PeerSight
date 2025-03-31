@@ -95,13 +95,24 @@ def create_form_view(request):
                 # Convert checkbox value to boolean
                 required = request.POST.get(f'required_{question_number}') == 'on'
                 
-                Question.objects.create(
+                question = Question.objects.create(
                     form=form_instance,
                     question_text=value,
                     question_type=question_type,
                     required=required,
                     order=int(question_number)
                 )
+
+                # Handle multiple choice options
+                if question_type == 'multiple_choice':
+                    choices_text = request.POST.get(f'choices_{question_number}')
+                    if choices_text:
+                        choices = [choice.strip() for choice in choices_text.split('\n') if choice.strip()]
+                        for choice_text in choices:
+                            Choice.objects.create(
+                                question=question,
+                                choice_text=choice_text
+                            )
         
         return redirect('manage_forms')
     

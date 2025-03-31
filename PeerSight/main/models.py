@@ -19,11 +19,12 @@ class Question(models.Model):
     QUESTION_TYPES = [
         ('text', 'Short Answer'),
         ('likert', 'Likert'),
+        ('multiple_choice', 'Multiple Choice'),
     ]
 
     form = models.ForeignKey(Form, on_delete=models.CASCADE, related_name='questions')
     question_text = models.CharField(max_length=500)
-    question_type = models.CharField(max_length=10, choices=QUESTION_TYPES)
+    question_type = models.CharField(max_length=20, choices=QUESTION_TYPES)
     required = models.BooleanField(default=True)
     order = models.PositiveIntegerField(default=0)
 
