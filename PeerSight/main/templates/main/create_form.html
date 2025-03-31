@@ -3,111 +3,128 @@
 
 {% block content %}
 <div class="min-h-screen bg-gradient-to-b from-stone-300 to-stone-300 p-8">
-    <!-- Top Half -->
-    <div class="h-[50vh] flex gap-8 mb-8">
-        <!-- Left Side - Form Details -->
-        <div class="flex-1 space-y-4">
-            <!-- Form Title Input -->
-            <div class="w-full bg-zinc-900 bg-opacity-75 rounded-3xl outline outline-8 outline-offset-[-7px] outline-black">
-                <div class="p-6">
-                    <input type="text" name="form_title" class="w-full bg-transparent text-white text-5xl font-['Poppins'] border-none focus:outline-none placeholder-white" placeholder="Enter Form Title">
+    <form method="post" id="createForm">
+        {% csrf_token %}
+        <!-- Top Half -->
+        <div class="h-[50vh] flex gap-8 mb-8">
+            <!-- Left Side - Form Details -->
+            <div class="flex-1 space-y-4">
+                <!-- Form Title Input -->
+                <div class="w-full bg-zinc-900 bg-opacity-75 rounded-3xl outline outline-8 outline-offset-[-7px] outline-black">
+                    <div class="p-6">
+                        <input type="text" name="title" class="w-full bg-transparent text-white text-5xl font-['Poppins'] border-none focus:outline-none placeholder-white" placeholder="Enter Form Title:" required>
+                    </div>
+                </div>
+
+                <!-- Description Section -->
+                <div class="w-full bg-zinc-900 bg-opacity-75 rounded-3xl outline outline-8 outline-offset-[-7px] outline-black">
+                    <div class="p-6">
+                        <textarea name="description" class="w-full bg-transparent text-white text-5xl font-['Poppins'] border-none focus:outline-none placeholder-white resize-none" placeholder="Enter Form Description:" rows="3"></textarea>
+                    </div>
                 </div>
             </div>
 
-            <!-- Description Section -->
-            <div class="w-full bg-zinc-900 bg-opacity-75 rounded-3xl outline outline-8 outline-offset-[-7px] outline-black">
-                <div class="p-6">
-                    <textarea class="w-full bg-transparent text-white text-5xl font-['Poppins'] border-none focus:outline-none placeholder-white resize-none" placeholder="Enter Form Description:" rows="3"></textarea>
+            <!-- Right Side - Class, Teams, Deadline -->
+            <div class="w-[648px] space-y-4">
+                <!-- Class Selection -->
+                <div class="w-full h-[120px] bg-zinc-900 bg-opacity-75 rounded-3xl outline outline-8 outline-offset-[-7px] outline-black">
+                    <div class="p-4">
+                        <h2 class="text-white text-3xl font-['Poppins']">Select Class:</h2>
+                        <select name="course" class="mt-2 w-full bg-transparent text-zinc-900 text-xl font-['Poppins'] border border-white rounded-lg p-2">
+                            <option value="">Choose a class...</option>
+                            {% for course in courses %}
+                                <option value="{{ course.id }}">{{ course.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Team Selection -->
+                <div class="w-full h-[120px] bg-zinc-900 bg-opacity-75 rounded-3xl outline outline-8 outline-offset-[-7px] outline-black">
+                    <div class="p-4">
+                        <h2 class="text-white text-3xl font-['Poppins']">Select Teams to Deploy Form To:</h2>
+                        <div class="mt-2 space-y-1">
+                            {% for team in teams %}
+                                <label class="flex items-center text-white text-xl font-['Poppins']">
+                                    <input type="checkbox" name="teams" value="{{ team.id }}" class="mr-2">
+                                    {{ team.name }}
+                                </label>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Deadline Section -->
+                <div class="w-full h-[120px] bg-zinc-900 bg-opacity-75 rounded-3xl shadow-lg outline outline-8 outline-offset-[-7px] outline-black">
+                    <div class="p-4">
+                        <div class="text-white text-3xl font-['Poppins']">
+                            Deadline: <br/>
+                            <input type="datetime-local" name="deadline" class="mt-2 bg-transparent text-white text-xl font-['Poppins'] border border-white rounded-lg p-2">
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Right Side - Class, Team, Deadline -->
-        <div class="w-[648px] space-y-4">
-            <!-- Class Selection -->
-            <div class="w-full h-[120px] bg-zinc-900 bg-opacity-75 rounded-3xl outline outline-8 outline-offset-[-7px] outline-black">
-                <div class="p-4">
-                    <h2 class="text-white text-3xl font-['Poppins']">Select Class:</h2>
-                    <select class="mt-2 w-full bg-transparent text-white text-xl font-['Poppins'] border border-white rounded-lg p-2">
-                        <option value="">Choose a class...</option>
-                    </select>
-                </div>
-            </div>
-
-            <!-- Team Selection -->
-            <div class="w-full h-[120px] bg-zinc-900 bg-opacity-75 rounded-3xl outline outline-8 outline-offset-[-7px] outline-black">
-                <div class="p-4">
-                    <h2 class="text-white text-3xl font-['Poppins']">Select Teams to Deploy Form To:</h2>
-                    <div class="mt-2 space-y-1">
-                        <label class="flex items-center text-white text-xl font-['Poppins']">
-                            <input type="checkbox" class="mr-2">
-                            Team 1
-                        </label>
-                        <label class="flex items-center text-white text-xl font-['Poppins']">
-                            <input type="checkbox" class="mr-2">
-                            Team 2
-                        </label>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Deadline Section -->
-            <div class="w-full h-[120px] bg-zinc-900 bg-opacity-75 rounded-3xl shadow-lg outline outline-8 outline-offset-[-7px] outline-black">
-                <div class="p-4">
-                    <div class="text-white text-3xl font-['Poppins']">
-                        Deadline: <br/>
-                        <input type="datetime-local" class="mt-2 bg-transparent text-white text-xl font-['Poppins'] border border-white rounded-lg p-2">
-                    </div>
-                </div>
-            </div>
+        <!-- Bottom Half - Questions -->
+        <div class="h-[50vh] overflow-y-auto" id="questionsContainer">
+            <!-- Questions will be added here -->
         </div>
-    </div>
 
-    <!-- Bottom Half - Questions -->
-    <div class="h-[50vh] overflow-y-auto">
-        <form method="post" class="space-y-8">
-            {% csrf_token %}
-            
-            <!-- Questions -->
-            {{ question_formset.management_form }}
-            {% for form in question_formset %}
-                <div class="question-block w-full bg-white rounded-3xl outline outline-[5px] outline-offset-[-5px] outline-black p-6">
-                    {{ form.as_p }}
-                    
-                    <div class="mcq-choices hidden mt-4">
-                        <label class="text-neutral-400 text-2xl font-['Poppins']">Choices (one per line):</label><br>
-                        <textarea name="choices_{{ form.prefix }}" rows="3" class="w-full mt-2 p-2 border border-neutral-400 rounded-lg"></textarea>
-                    </div>
-                </div>
-            {% endfor %}
-
+        <div class="flex justify-between items-center mt-4">
+            <button type="button" id="addQuestionBtn" class="bg-zinc-900 text-white px-6 py-3 rounded-lg text-xl font-['Poppins'] hover:bg-opacity-90 transition-all">
+                + Add Question
+            </button>
             <button type="submit" class="bg-zinc-900 text-white px-8 py-3 rounded-lg text-xl font-['Poppins'] hover:bg-opacity-90 transition-all">
                 Save Form
             </button>
-        </form>
-    </div>
+        </div>
+    </form>
 </div>
 
 <script>
+    let questionCount = 0;
+
+    function createQuestionBlock() {
+        questionCount++;
+        const questionBlock = document.createElement('div');
+        questionBlock.className = 'question-block w-full bg-white rounded-3xl outline outline-[5px] outline-offset-[-5px] outline-black p-6 mb-4';
+        questionBlock.innerHTML = `
+            <div class="space-y-4">
+                <div>
+                    <label class="text-neutral-400 text-2xl font-['Poppins']">Question Text:</label><br>
+                    <input type="text" name="question_text_${questionCount}" class="w-full mt-2 p-2 border border-neutral-400 rounded-lg" placeholder="Enter your question">
+                </div>
+                
+                <div>
+                    <label class="text-neutral-400 text-2xl font-['Poppins']">Question Type:</label><br>
+                    <select name="question_type_${questionCount}" class="w-full mt-2 p-2 border border-neutral-400 rounded-lg">
+                        <option value="text">Short Answer</option>
+                        <option value="likert">Likert</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="flex items-center text-neutral-400 text-2xl font-['Poppins']">
+                        <input type="checkbox" name="required_${questionCount}" checked class="mr-2">
+                        Required
+                    </label>
+                </div>
+            </div>
+        `;
+        return questionBlock;
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
-        const questionBlocks = document.querySelectorAll('.question-block');
+        const questionsContainer = document.getElementById('questionsContainer');
+        const addQuestionBtn = document.getElementById('addQuestionBtn');
 
-        questionBlocks.forEach(block => {
-            const select = block.querySelector('select[name$="question_type"]');
-            const mcqChoices = block.querySelector('.mcq-choices');
+        // Add initial question
+        questionsContainer.appendChild(createQuestionBlock());
 
-            const toggleMCQ = () => {
-                if (select.value === 'mcq') {
-                    mcqChoices.classList.remove('hidden');
-                } else {
-                    mcqChoices.classList.add('hidden');
-                }
-            };
-
-            if (select) {
-                toggleMCQ();
-                select.addEventListener('change', toggleMCQ);
-            }
+        // Add question button click handler
+        addQuestionBtn.addEventListener('click', function() {
+            questionsContainer.appendChild(createQuestionBlock());
         });
     });
 </script>

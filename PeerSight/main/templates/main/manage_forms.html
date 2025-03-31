@@ -1,21 +1,58 @@
-_{% extends "main/base.html" %}
+{% extends "main/base.html" %}
+{% load static %}
+
 {% block content %}
-<h1>Manage Your Forms</h1>
+<div class="min-h-screen bg-gradient-to-b from-stone-300 to-stone-300 p-8">
+    <div class="max-w-7xl mx-auto">
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-4xl font-['Poppins'] text-zinc-900">Manage Your Forms</h1>
+            <a href="{% url 'create_form' %}" class="bg-zinc-900 text-white px-6 py-3 rounded-lg text-xl font-['Poppins'] hover:bg-opacity-90 transition-all">
+                + Create New Form
+            </a>
+        </div>
 
-{% if forms %}
-  <ul>
-    {% for form in forms %}
-      <li>
-        <strong>{{ form.title }}</strong> - created {{ form.created_at|date:"M d, Y" }}
-        <br>
-        <a href="{% url 'form_detail' form.id %}">View</a> |
-<a href="{% url 'fill_form' form.id %}">Fill</a>
-      </li>
-    {% endfor %}
-  </ul>
-{% else %}
-  <p>You haven’t created any forms yet. <a href="{% url 'create_form' %}">Make one now →</a></p>
-{% endif %}
-
-<a href="{% url 'create_form' %}">+ Create New Form</a>
+        {% if forms %}
+            <div class="grid grid-cols-1 gap-6">
+                {% for form in forms %}
+                    <div class="bg-white rounded-3xl outline outline-[5px] outline-offset-[-5px] outline-black p-6">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h2 class="text-2xl font-['Poppins'] text-zinc-900 mb-2">{{ form.title }}</h2>
+                                <p class="text-neutral-600 text-lg font-['Poppins'] mb-4">{{ form.description|truncatewords:30 }}</p>
+                                <div class="space-y-2">
+                                    <p class="text-neutral-600 font-['Poppins']">
+                                        <span class="font-semibold">Course:</span> {{ form.course.name }}
+                                    </p>
+                                    <p class="text-neutral-600 font-['Poppins']">
+                                        <span class="font-semibold">Created:</span> {{ form.created_at|date:"M d, Y" }}
+                                    </p>
+                                    {% if form.deadline %}
+                                        <p class="text-neutral-600 font-['Poppins']">
+                                            <span class="font-semibold">Deadline:</span> {{ form.deadline|date:"M d, Y H:i" }}
+                                        </p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="flex gap-4">
+                                <a href="{% url 'form_detail' form.id %}" class="bg-zinc-900 text-white px-4 py-2 rounded-lg text-lg font-['Poppins'] hover:bg-opacity-90 transition-all">
+                                    View
+                                </a>
+                                <a href="{% url 'fill_form' form.id %}" class="bg-zinc-900 text-white px-4 py-2 rounded-lg text-lg font-['Poppins'] hover:bg-opacity-90 transition-all">
+                                    Fill
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center py-12">
+                <p class="text-2xl font-['Poppins'] text-neutral-600 mb-4">You haven't created any forms yet.</p>
+                <a href="{% url 'create_form' %}" class="bg-zinc-900 text-white px-6 py-3 rounded-lg text-xl font-['Poppins'] hover:bg-opacity-90 transition-all inline-block">
+                    Create Your First Form →
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
 {% endblock %}
