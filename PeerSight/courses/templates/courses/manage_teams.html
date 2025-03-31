@@ -1,5 +1,6 @@
 {% extends "courses/base.html" %}
-{% block title %}{{ course.name }} - Details{% endblock %}
+{% block title %} Manage Teams in {{ course.name }} {% endblock %}
+
 
 <!--Administrator sidebar-->
 {% block nav %}
@@ -109,31 +110,31 @@
 {% endblock %}
 
 {% block content %}
-<div class="max-w-4xl mx-auto bg-white shadow-md rounded-xl p-6 mt-12">
-    <h1 class="text-3xl font-bold mb-2">{{ course.name }}</h1>
-    <p class="text-gray-700">{{ course.subject }} | {{ course.semester }} | Section {{ course.section }}</p>
-    <p class="text-sm text-gray-500 mt-1">Course ID: {{ course.course_id }}</p>
+<h1 class="text-2xl font-bold mb-4">Teams in {{ course.name }}</h1>
+<a href="{% url 'courses:create_team' course.id %}" class="bg-green-600 text-white px-3 py-1 rounded">+ New Team</a>
 
-    <hr class="my-4" />
+<div class="mt-6 space-y-6">
+  {% for team in teams %}
+    <div class="bg-white p-4 rounded shadow">
+      <h2 class="text-xl font-semibold">{{ team.name }}</h2>
+      <ul class="mt-2">
+        {% for member in team.members.all %}
+          <li>{{ member.name }} ({{ member.student_id }})</li>
+        {% empty %}
+          <li class="text-gray-500">No members yet.</li>
+        {% endfor %}
+      </ul>
 
-    <div class="flex justify-between items-center">
-      <h2 class="text-xl font-semibold">Enrolled Students</h2>
-      <a href="{% url 'courses:add_student' course.id %}" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 bg-[#34A853]">
-        Add Student
-      </a>
+      <form method="post" action="{% url 'courses:add_member' course.id team.id %}" class="mt-2">
+        {% csrf_token %}
+        <select name="student_id" class="border rounded p-1">
+          {% for student in unassigned_students %}
+            <option value="{{ student.id }}">{{ student.name }}</option>
+          {% endfor %}
+        </select>
+        <button type="submit" class="ml-2 px-3 py-1 bg-blue-600 text-white rounded">Add</button>
+      </form>
     </div>
-    <a href="{% url 'courses:manage_teams' course.id %}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 bg-[#34A853]">
-      Manage Teams for this course
-    </a>
-    <ul class="mt-4 space-y-2 mb-4">
-      {% for student in students %}
-        <li class="bg-gray-100 p-3 rounded">{{ student.name }} — {{ student.student_id }} ({{ student.email }})</li>
-      {% empty %}
-        <li>No students enrolled yet</li>
-      {% endfor %}
-    </ul>
-    <a href="{% url 'courses:manage_courses' %}" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 mt-10">
-         Back to Courses
-    </a>
+  {% endfor %}
 </div>
 {% endblock %}
