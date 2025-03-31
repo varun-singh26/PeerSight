@@ -1,58 +1,151 @@
-{% extends "main/base.html" %}
-{% load static %}
+{% extends "courses/base.html" %}
+
+{% block title %}Manage Your Forms{% endblock %}
+
+<!--Administrator sidebar-->
+{% block nav %}
+<nav
+    class="flex flex-col gap-2 px-0 py-5 bg-gray-800 w-[300px] min-h-screen"
+    id="sidebar"
+>
+    <ul class="w-full">
+        <li>
+          <a
+            href="#"
+            class="flex gap-4 items-center px-6 py-3 cursor-pointer duration-[0.2s] transition-[background-color] hover:bg-gray-700 max-md:px-5 max-md:py-2.5 max-sm:px-4 max-sm:py-3"
+            data-nav-item
+          >
+            <i class="ti ti-home text-2xl text-white"></i>
+            <span class="text-base font-medium text-white max-md:text-sm"
+              >Admin Dashboard</span
+            >
+          </a>
+        </li>
+        <li>
+          <a
+            href="#"
+            class="flex gap-4 items-center px-6 py-3 cursor-pointer duration-[0.2s] transition-[background-color] hover:bg-gray-700 max-md:px-5 max-md:py-2.5 max-sm:px-4 max-sm:py-3"
+            data-nav-item
+          >
+            <i class="ti ti-book text-2xl text-white"></i>
+            <span class="text-base font-medium text-white max-md:text-sm"
+              >Your Classes</span
+            >
+          </a>
+        </li>
+        <li>
+          <a
+            href="{% url 'courses:manage_courses' %}"
+            class="flex gap-4 items-center px-6 py-3 cursor-pointer duration-[0.2s] transition-[background-color] hover:bg-gray-700 max-md:px-5 max-md:py-2.5 max-sm:px-4 max-sm:py-3"
+            data-nav-item
+          >
+            <i class="ti ti-layout-grid text-2xl text-white"></i>
+            <span class="text-base font-medium text-white max-md:text-sm"
+              >Manage Courses</span
+            >
+          </a>
+        </li>
+        <li>
+          <a
+            href="#"
+            class="flex gap-4 items-center px-6 py-3 cursor-pointer duration-[0.2s] transition-[background-color] hover:bg-gray-700 max-md:px-5 max-md:py-2.5 max-sm:px-4 max-sm:py-3"
+            data-nav-item
+          >
+            <i class="ti ti-users text-2xl text-white"></i>
+            <span class="text-base font-medium text-white max-md:text-sm"
+              >Manage Teams</span
+            >
+          </a>
+        </li>
+        <li>
+          <a
+          href="{% url 'manage_forms' %}"
+            class="flex gap-4 items-center px-6 py-3 cursor-pointer duration-[0.2s] transition-[background-color] hover:bg-gray-700 max-md:px-5 max-md:py-2.5 max-sm:px-4 max-sm:py-3"
+            data-nav-item
+          >
+            <i class="ti ti-list text-2xl text-white"></i>
+            <span class="text-base font-medium text-white max-md:text-sm"
+              >Manage Forms</span
+            >
+          </a>
+        </li>
+        <li>
+          <a
+          href="{% url 'create_form' %}"
+            class="flex gap-4 items-center px-6 py-3 cursor-pointer duration-[0.2s] transition-[background-color] hover:bg-gray-700 max-md:px-5 max-md:py-2.5 max-sm:px-4 max-sm:py-3"
+            data-nav-item
+          >
+            <i class="ti ti-plus text-2xl text-white"></i>
+            <span class="text-base font-medium text-white max-md:text-sm"
+              >Create Form</span
+            >
+          </a>
+        </li>
+        <li>
+          <a
+            href="#"
+            class="flex gap-4 items-center px-6 py-3 cursor-pointer duration-[0.2s] transition-[background-color] hover:bg-gray-700 max-md:px-5 max-md:py-2.5 max-sm:px-4 max-sm:py-3"
+            data-nav-item
+          >
+            <i class="ti ti-chart-dots text-2xl text-white"></i>
+            <span class="text-base font-medium text-white max-md:text-sm"
+              >View/Evaluate Responses</span
+            >
+          </a>
+        </li>
+        <li>
+          <a
+            href="#"
+            class="flex gap-4 items-center px-6 py-3 cursor-pointer duration-[0.2s] transition-[background-color] hover:bg-gray-700 max-md:px-5 max-md:py-2.5 max-sm:px-4 max-sm:py-3"
+            data-nav-item
+          >
+            <i class="ti ti-mail text-2xl text-white"></i>
+            <span class="text-base font-medium text-white max-md:text-sm"
+              >Manage Reminders</span
+            >
+          </a>
+        </li>
+    </ul>
+</nav>
+{% endblock %}
+
 
 {% block content %}
-<div class="min-h-screen bg-gradient-to-b from-stone-300 to-stone-300 p-8">
-    <div class="max-w-7xl mx-auto">
-        <div class="flex justify-between items-center mb-8">
-            <h1 class="text-4xl font-['Poppins'] text-zinc-900">Manage Your Forms</h1>
-            <a href="{% url 'create_form' %}" class="bg-zinc-900 text-white px-6 py-3 rounded-lg text-xl font-['Poppins'] hover:bg-opacity-90 transition-all">
-                + Create New Form
-            </a>
-        </div>
+<h1 class="text-3xl font-bold mb-5 mt-8 ml-8">Manage Your Forms</h1>
+<hr class="my-4 border-t-4" />
 
-        {% if forms %}
-            <div class="grid grid-cols-1 gap-6">
-                {% for form in forms %}
-                    <div class="bg-white rounded-3xl outline outline-[5px] outline-offset-[-5px] outline-black p-6">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <h2 class="text-2xl font-['Poppins'] text-zinc-900 mb-2">{{ form.title }}</h2>
-                                <p class="text-neutral-600 text-lg font-['Poppins'] mb-4">{{ form.description|truncatewords:30 }}</p>
-                                <div class="space-y-2">
-                                    <p class="text-neutral-600 font-['Poppins']">
-                                        <span class="font-semibold">Course:</span> {{ form.course.name }}
-                                    </p>
-                                    <p class="text-neutral-600 font-['Poppins']">
-                                        <span class="font-semibold">Created:</span> {{ form.created_at|date:"M d, Y" }}
-                                    </p>
-                                    {% if form.deadline %}
-                                        <p class="text-neutral-600 font-['Poppins']">
-                                            <span class="font-semibold">Deadline:</span> {{ form.deadline|date:"M d, Y H:i" }}
-                                        </p>
-                                    {% endif %}
-                                </div>
-                            </div>
-                            <div class="flex gap-4">
-                                <a href="{% url 'form_detail' form.id %}" class="bg-zinc-900 text-white px-4 py-2 rounded-lg text-lg font-['Poppins'] hover:bg-opacity-90 transition-all">
-                                    View
-                                </a>
-                                <a href="{% url 'fill_form' form.id %}" class="bg-zinc-900 text-white px-4 py-2 rounded-lg text-lg font-['Poppins'] hover:bg-opacity-90 transition-all">
-                                    Fill
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-        {% else %}
-            <div class="text-center py-12">
-                <p class="text-2xl font-['Poppins'] text-neutral-600 mb-4">You haven't created any forms yet.</p>
-                <a href="{% url 'create_form' %}" class="bg-zinc-900 text-white px-6 py-3 rounded-lg text-xl font-['Poppins'] hover:bg-opacity-90 transition-all inline-block">
-                    Create Your First Form →
-                </a>
-            </div>
-        {% endif %}
-    </div>
+<!-- Button to create new form -->
+<a
+  href="{% url 'create_form' %}"
+  class="flex items-center justify-center w-[100px] h-[50px] bg-zinc-900 border-black border-[7px] rounded-3xl text-white text-3xl font-bold ml-auto mr-4"
+>
+  +
+</a>
+
+<!-- Display Forms -->
+<div class="mt-5 mr-5 ml-5 space-y-4">
+  {% if forms %}
+    {% for form in forms %}
+      <div class="bg-white text-black p-4 rounded-xl shadow-md hover:bg-gray-100 transition flex justify-between items-center">
+        <div>
+            <h2 class="text-2xl font-bold">{{ form.title }}</h2>
+            {% if form.description %}
+              <p class="text-sm text-neutral-600">{{ form.description|truncatewords:30 }}</p>
+            {% endif %}
+            <p class="text-sm text-neutral-600">Course: {{ form.course.name }}</p>
+            <p class="text-sm text-neutral-600">Created: {{ form.created_at|date:"M d, Y" }}</p>
+            {% if form.deadline %}
+              <p class="text-sm text-neutral-600">Deadline: {{ form.deadline|date:"M d, Y H:i" }}</p>
+            {% endif %}
+        </div>
+        <div class="flex gap-2">
+          <a href="{% url 'form_detail' form.id %}" class="bg-zinc-900 text-white px-4 py-2 rounded-md hover:bg-opacity-90 transition">View</a>
+          <a href="{% url 'fill_form' form.id %}" class="bg-zinc-900 text-white px-4 py-2 rounded-md hover:bg-opacity-90 transition">Fill</a>
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p class="text-white text-center">No forms available. Click the button above to create a form.</p>
+  {% endif %}
 </div>
 {% endblock %}
