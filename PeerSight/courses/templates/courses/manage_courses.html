@@ -114,7 +114,7 @@
 <!-- Button to open modal -->
 <button
   onclick="document.getElementById('create-course-modal').classList.remove('hidden')"
-  class="flex items-center justify-center w-[150px] h-[50px] bg-zinc-900 border-black border-[7px] rounded-3xl text-white text-3xl font-bold ml-auto mr-4"
+  class="flex items-center justify-center w-[100px] h-[50px] bg-zinc-900 border-black border-[7px] rounded-3xl text-white text-3xl font-bold ml-auto mr-4"
 >
   +
 </button>
@@ -124,7 +124,7 @@
   {% if courses %}
     {% for course in courses %}
       <a href="{% url 'courses:course_detail' course.id %}" class="block bg-white text-black p-4 rounded-xl shadow-md hover:bg-gray-100 transition">
-        <div class="bg-white text-black p-4 rounded-xl shadow-md">
+        <div class="bg-white text-black p-4 rounded-xl shadow-md"> 
             <h2 class="text-2xl font-bold">{{ course.name }}</h2>
             <p class="text-sm">{{ course.subject }} | {{ course.semester }} | Section {{ course.section }}</p>
             <p class="text-sm">Course ID: {{ course.course_id }}</p>
@@ -138,7 +138,8 @@
 
 <!-- Course creation modal (hidden by default) -->
 <div id="create-course-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 hidden">
-  <div class="bg-white p-6 rounded-xl w-[400px]">
+  <div class="bg-white p-6 rounded-xl w-[400px] flex flex-col">
+    <a href="{% url 'courses:manage_courses' %}" class = "ml-auto font-bold">X</a>
     <h2 class="text-xl font-bold mb-4">Create New Course</h2>
     <form method="post" action="{% url 'courses:create_course' %}" class="space-y-4">
       {% csrf_token %}

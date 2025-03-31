@@ -15,8 +15,8 @@ def add_student_view(request, course_id):
        student_id = request.POST['student_id']
        graduation_year = request.POST['graduation_year']
        email = request.POST['email']
-       team_id = request.POST.get('team')
-       new_team_name = request.POST.get('new_team_name') 
+       team_id = request.POST.get('team', None)
+       new_team_name = request.POST.get('new_team_name', None) 
 
        student, created = Student.objects.get_or_create(
            student_id=student_id,
@@ -27,11 +27,15 @@ def add_student_view(request, course_id):
        if new_team_name:
             team = Team.objects.create(course=course, name=new_team_name)
             team.members.add(student)  # Add student to the new team
-       if team_id:
-            team = get_object_or_404(Team, id=team_id, course=course)
+       elif team_id:
+            team = Team.objects.get(id=team_id)
             team.members.add(student)
-
+            
+       student.courses.add(course)
+       
        return redirect('courses:course_detail', course_id=course.id)
+    
+    teams = course.teams.all()
     
     return render(request, "courses/add_student.html", {
         'course': course,

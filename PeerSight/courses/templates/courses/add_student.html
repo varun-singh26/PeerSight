@@ -121,7 +121,7 @@
 
         <div class="space-y-2">
           <h1 class="text-2xl font-bold mb-4">Add Student to Team</h1>
-          <label for="team" class="block">Assign to Team:</label>
+          <!-- <label for="team" class="block">Assign to Team:</label> -->
           <select name="team" class="w-full border rounded p-2">
               <option value="">Select Team (None)</option>
               {% for team in teams %}
@@ -131,8 +131,8 @@
         </div>
 
         <div class="space-y-2">
-          <label for="new_team_name" class="block">Or Create a New Team:</label>
-          <input name="new_team_name" class="w-full border rounded p-2" placeholder="Team Name" />
+          <label for="new_team_name" class="block text-center">Or</label>
+          <input name="new_team_name" class="w-full border rounded p-2" placeholder="Create New Team Name" />
         </div>
 
         <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 w-full bg-[#34A853]">
