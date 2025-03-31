@@ -118,13 +118,15 @@
 
     <div class="flex justify-between items-center">
       <h2 class="text-xl font-semibold">Enrolled Students</h2>
-      <a href="{% url 'courses:add_student' course.id %}" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 bg-[#34A853]">
-        Add Student
-      </a>
+      <div class="ml-auto flex space-x-2">
+        <a href="{% url 'courses:add_student' course.id %}" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 bg-[#34A853]">
+          Add Student
+        </a>
+        <a href="{% url 'courses:manage_teams' course.id %}" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 bg-[#34A853]">
+          Manage Teams
+        </a>
+      </div>
     </div>
-    <a href="{% url 'courses:manage_teams' course.id %}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 bg-[#34A853]">
-      Manage Teams for this course
-    </a>
     <ul class="mt-4 space-y-2 mb-4">
       {% for student in students %}
         <li class="bg-gray-100 p-3 rounded">{{ student.name }} — {{ student.student_id }} ({{ student.email }}) 

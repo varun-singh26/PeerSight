@@ -110,10 +110,11 @@
 {% endblock %}
 
 {% block content %}
-<h1 class="text-2xl font-bold mb-4">Teams in {{ course.name }}</h1>
-<a href="{% url 'courses:create_team' course.id %}" class="bg-green-600 text-white px-3 py-1 rounded">+ New Team</a>
+<h1 class="text-3xl font-bold mb-5 mt-8 ml-8">Teams in {{ course.name }}</h1>
+<hr class="my-4 border-t-4" />
 
-<div class="mt-6 space-y-6">
+<div class="mt-6 ml-4 mr-4 mb-6 space-y-6">
+  <a href="{% url 'courses:create_team' course.id %}" class="bg-green-600 text-white px-3 py-1 rounded">+ New Team</a>
   {% for team in teams %}
     <div class="bg-white p-4 rounded shadow">
       <h2 class="text-xl font-semibold">{{ team.name }}</h2>
@@ -136,5 +137,8 @@
       </form>
     </div>
   {% endfor %}
+  <a href="{% url 'courses:course_detail' course.id %}" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 w-full text-center bg-[#E42D2D]">
+    Back to {{ course.name }} 
+  </a>  
 </div>
 {% endblock %}
