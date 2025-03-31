@@ -127,7 +127,19 @@
     </a>
     <ul class="mt-4 space-y-2 mb-4">
       {% for student in students %}
-        <li class="bg-gray-100 p-3 rounded">{{ student.name }} — {{ student.student_id }} ({{ student.email }})</li>
+        <li class="bg-gray-100 p-3 rounded">{{ student.name }} — {{ student.student_id }} ({{ student.email }}) 
+          {% with student_teams=student.teams.all %}
+          {% if student_teams %}
+            —
+            {% for team in student_teams %}
+              {{ team.name }}
+              {% if not forloop.last %}, {% endif %}
+            {% endfor %}
+          {% else %}
+            — No Team Assigned
+          {% endif %}
+        {% endwith %}
+        </li>
       {% empty %}
         <li>No students enrolled yet</li>
       {% endfor %}
