@@ -1,128 +1,264 @@
-{% extends "main/base.html" %}
-{% load static %}
+{%extends 'main/base.html'%}
+{%block title%}Create Form{%endblock%}
+{% block nav %}
+
+
+<nav
+class="flex flex-col gap-2 px-0 py-5 bg-gray-800 fixed top-0 left-0 h-full w-[300px]"
+id="sidebar"
+>
+    <ul class="w-full">
+        <li>
+          <a
+            href="#"
+            class="flex gap-4 items-center px-6 py-3 cursor-pointer duration-[0.2s] transition-[background-color] hover:bg-gray-700 max-md:px-5 max-md:py-2.5 max-sm:px-4 max-sm:py-3"
+            data-nav-item
+          >
+            <i class="ti ti-home text-2xl text-white"></i>
+            <span class="text-base font-medium text-white max-md:text-sm"
+              >Admin Dashboard</span
+            >
+          </a>
+        </li>
+        <li>
+          <a
+            href="#"
+            class="flex gap-4 items-center px-6 py-3 cursor-pointer duration-[0.2s] transition-[background-color] hover:bg-gray-700 max-md:px-5 max-md:py-2.5 max-sm:px-4 max-sm:py-3"
+            data-nav-item
+          >
+            <i class="ti ti-book text-2xl text-white"></i>
+            <span class="text-base font-medium text-white max-md:text-sm"
+              >Your Classes</span
+            >
+          </a>
+        </li>
+        <li>
+          <a
+            href="{% url 'courses:manage_courses' %}"
+            class="flex gap-4 items-center px-6 py-3 cursor-pointer duration-[0.2s] transition-[background-color] hover:bg-gray-700 max-md:px-5 max-md:py-2.5 max-sm:px-4 max-sm:py-3"
+            data-nav-item
+          >
+            <i class="ti ti-layout-grid text-2xl text-white"></i>
+            <span class="text-base font-medium text-white max-md:text-sm"
+              >Manage Courses</span
+            >
+          </a>
+        </li>
+        <li>
+          <a
+            href="#"
+            class="flex gap-4 items-center px-6 py-3 cursor-pointer duration-[0.2s] transition-[background-color] hover:bg-gray-700 max-md:px-5 max-md:py-2.5 max-sm:px-4 max-sm:py-3"
+            data-nav-item
+          >
+            <i class="ti ti-users text-2xl text-white"></i>
+            <span class="text-base font-medium text-white max-md:text-sm"
+              >Manage Teams</span
+            >
+          </a>
+        </li>
+        <li>
+          <a
+          href="{% url 'manage_forms' %}"
+            class="flex gap-4 items-center px-6 py-3 cursor-pointer duration-[0.2s] transition-[background-color] hover:bg-gray-700 max-md:px-5 max-md:py-2.5 max-sm:px-4 max-sm:py-3"
+            data-nav-item
+          >
+            <i class="ti ti-list text-2xl text-white"></i>
+            <span class="text-base font-medium text-white max-md:text-sm"
+              >Manage Forms</span
+            >
+          </a>
+        </li>
+        <li>
+          <a
+          href="{% url 'create_form' %}"
+            class="flex gap-4 items-center px-6 py-3 cursor-pointer duration-[0.2s] transition-[background-color] hover:bg-gray-700 max-md:px-5 max-md:py-2.5 max-sm:px-4 max-sm:py-3"
+            data-nav-item
+          >
+            <i class="ti ti-plus text-2xl text-white"></i>
+            <span class="text-base font-medium text-white max-md:text-sm"
+              >Create Form</span
+            >
+          </a>
+        </li>
+        <li>
+          <a
+            href="#"
+            class="flex gap-4 items-center px-6 py-3 cursor-pointer duration-[0.2s] transition-[background-color] hover:bg-gray-700 max-md:px-5 max-md:py-2.5 max-sm:px-4 max-sm:py-3"
+            data-nav-item
+          >
+            <i class="ti ti-chart-dots text-2xl text-white"></i>
+            <span class="text-base font-medium text-white max-md:text-sm"
+              >View/Evaluate Responses</span
+            >
+          </a>
+        </li>
+        <li>
+          <a
+            href="#"
+            class="flex gap-4 items-center px-6 py-3 cursor-pointer duration-[0.2s] transition-[background-color] hover:bg-gray-700 max-md:px-5 max-md:py-2.5 max-sm:px-4 max-sm:py-3"
+            data-nav-item
+          >
+            <i class="ti ti-mail text-2xl text-white"></i>
+            <span class="text-base font-medium text-white max-md:text-sm"
+              >Manage Reminders</span
+            >
+          </a>
+        </li>
+    </ul>
+</nav>
+{% endblock %}
 
 {% block content %}
-<div class="min-h-screen bg-gradient-to-b from-stone-300 to-stone-300 p-8">
-    <form method="post" id="createForm">
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Form</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #555;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .question-block {
+            margin-top: 15px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+
+        .add-question-btn {
+            display: inline-block;
+            margin: 10px 0;
+        }
+
+        .multiple-choice-options {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h2>Create a New Form</h2>
+    </div>
+    <form method="POST" action="{% url 'create_form' %}">
         {% csrf_token %}
-        <!-- Top Half -->
-        <div class="h-[50vh] flex gap-8 mb-8">
-            <!-- Left Side - Form Details -->
-            <div class="flex-1 space-y-4">
-                <!-- Form Title Input -->
-                <div class="w-full bg-zinc-900 bg-opacity-75 rounded-3xl outline outline-8 outline-offset-[-7px] outline-black">
-                    <div class="p-6">
-                        <input type="text" name="title" class="w-full bg-transparent text-white text-5xl font-['Poppins'] border-none focus:outline-none placeholder-white" placeholder="Enter Form Title:" required>
-                    </div>
-                </div>
-
-                <!-- Description Section -->
-                <div class="w-full bg-zinc-900 bg-opacity-75 rounded-3xl outline outline-8 outline-offset-[-7px] outline-black">
-                    <div class="p-6">
-                        <textarea name="description" class="w-full bg-transparent text-white text-5xl font-['Poppins'] border-none focus:outline-none placeholder-white resize-none" placeholder="Enter Form Description:" rows="3"></textarea>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right Side - Class, Teams, Deadline -->
-            <div class="w-[648px] space-y-4">
-                <!-- Class Selection -->
-                <div class="w-full h-[120px] bg-zinc-900 bg-opacity-75 rounded-3xl outline outline-8 outline-offset-[-7px] outline-black">
-                    <div class="p-4">
-                        <h2 class="text-white text-3xl font-['Poppins']">Select Class:</h2>
-                        <select name="course" class="mt-2 w-full bg-transparent text-zinc-900 text-xl font-['Poppins'] border border-white rounded-lg p-2">
-                            <option value="">Choose a class...</option>
-                            {% for course in courses %}
-                                <option value="{{ course.id }}">{{ course.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-
-                <!-- Team Selection -->
-                <div class="w-full h-[120px] bg-zinc-900 bg-opacity-75 rounded-3xl outline outline-8 outline-offset-[-7px] outline-black">
-                    <div class="p-4">
-                        <h2 class="text-white text-3xl font-['Poppins']">Select Teams to Deploy Form To:</h2>
-                        <div class="mt-2 space-y-1">
-                            {% for team in teams %}
-                                <label class="flex items-center text-white text-xl font-['Poppins']">
-                                    <input type="checkbox" name="teams" value="{{ team.id }}" class="mr-2">
-                                    {{ team.name }}
-                                </label>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Deadline Section -->
-                <div class="w-full h-[120px] bg-zinc-900 bg-opacity-75 rounded-3xl shadow-lg outline outline-8 outline-offset-[-7px] outline-black">
-                    <div class="p-4">
-                        <div class="text-white text-3xl font-['Poppins']">
-                            Deadline: <br/>
-                            <input type="datetime-local" name="deadline" class="mt-2 bg-transparent text-white text-xl font-['Poppins'] border border-white rounded-lg p-2">
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="form-group">
+            <label>Form Title:</label>
+            <input type="text" name="title" placeholder="Enter Form Title" required>
         </div>
-
-        <!-- Bottom Half - Questions -->
-        <div class="h-[50vh] overflow-y-auto" id="questionsContainer">
-            <!-- Questions will be added here -->
+        <div class="form-group">
+            <label>Form Description:</label>
+            <textarea name="description" placeholder="Enter Form Description"></textarea>
         </div>
-
-        <div class="flex justify-between items-center mt-4">
-            <button type="button" id="addQuestionBtn" class="bg-zinc-900 text-white px-6 py-3 rounded-lg text-xl font-['Poppins'] hover:bg-opacity-90 transition-all">
-                + Add Question
-            </button>
-            <button type="submit" class="bg-zinc-900 text-white px-8 py-3 rounded-lg text-xl font-['Poppins'] hover:bg-opacity-90 transition-all">
-                Save Form
-            </button>
+        <div class="form-group">
+            <label>Select Class:</label>
+            <select name="course">
+                <option value="">Choose a class...</option>
+                {% for course in courses %}
+                    <option value="{{ course.id }}">{{ course.name }}</option>
+                {% endfor %}
+            </select>
         </div>
+        <div class="form-group">
+            <label>Deadline:</label>
+            <input type="datetime-local" name="deadline">
+        </div>
+        <div class="form-group">
+            <label>Select Teams:</label>
+            {% for team in teams %}
+                <label>
+                    <input type="checkbox" name="teams" value="{{ team.id }}"> {{ team.name }}
+                </label>
+            {% endfor %}
+        </div>
+        <div id="questionsContainer"></div>
+        <button type="button" class="add-question-btn">+ Add Question</button>
+        <button type="submit">Save Form</button>
     </form>
+    
 </div>
-
 <script>
     let questionCount = 0;
 
     function createQuestionBlock() {
         questionCount++;
         const questionBlock = document.createElement('div');
-        questionBlock.className = 'question-block w-full bg-white rounded-3xl outline outline-[5px] outline-offset-[-5px] outline-black p-6 mb-4';
+        questionBlock.className = 'question-block';
         questionBlock.innerHTML = `
-            <div class="space-y-4">
-                <div>
-                    <label class="text-neutral-400 text-2xl font-['Poppins']">Question Text:</label><br>
-                    <input type="text" name="question_text_${questionCount}" class="w-full mt-2 p-2 border border-neutral-400 rounded-lg" placeholder="Enter your question">
-                </div>
-                
-                <div>
-                    <label class="text-neutral-400 text-2xl font-['Poppins']">Question Type:</label><br>
-                    <select name="question_type_${questionCount}" class="w-full mt-2 p-2 border border-neutral-400 rounded-lg">
-                        <option value="text">Short Answer</option>
-                        <option value="likert">Likert</option>
-                        <option value="multiple_choice">Multiple Choice</option>
-                    </select>
-                </div>
-
-                <div class="multiple-choice-options" style="display: none;">
-                    <label class="text-neutral-400 text-2xl font-['Poppins']">Options (one per line):</label><br>
-                    <textarea name="choices_${questionCount}" class="w-full mt-2 p-2 border border-neutral-400 rounded-lg" rows="4" placeholder="Enter options, one per line"></textarea>
-                </div>
-
-                <div>
-                    <label class="flex items-center text-neutral-400 text-2xl font-['Poppins']">
-                        <input type="checkbox" name="required_${questionCount}" checked class="mr-2">
-                        Required
-                    </label>
-                </div>
+            <div>
+                <label>Question Text:</label>
+                <input type="text" name="question_text_${questionCount}" placeholder="Enter your question">
+            </div>
+            <div>
+                <label>Question Type:</label>
+                <select name="question_type_${questionCount}" class="question-type">
+                    <option value="text">Short Answer</option>
+                    <option value="likert">Likert Scale</option>
+                    <option value="multiple_choice">Multiple Choice</option>
+                </select>
+            </div>
+            <div class="multiple-choice-options">
+                <label>Options (one per line):</label>
+                <textarea name="choices_${questionCount}" rows="4" placeholder="Enter options, one per line"></textarea>
             </div>
         `;
 
-        // Add event listener for question type change
-        const typeSelect = questionBlock.querySelector(`select[name="question_type_${questionCount}"]`);
+        const typeSelect = questionBlock.querySelector('.question-type');
         const optionsDiv = questionBlock.querySelector('.multiple-choice-options');
-        
+
         typeSelect.addEventListener('change', function() {
             optionsDiv.style.display = this.value === 'multiple_choice' ? 'block' : 'none';
         });
@@ -130,17 +266,12 @@
         return questionBlock;
     }
 
-    document.addEventListener('DOMContentLoaded', function () {
+    document.querySelector('.add-question-btn').addEventListener('click', function() {
         const questionsContainer = document.getElementById('questionsContainer');
-        const addQuestionBtn = document.getElementById('addQuestionBtn');
-
-        // Add initial question
         questionsContainer.appendChild(createQuestionBlock());
-
-        // Add question button click handler
-        addQuestionBtn.addEventListener('click', function() {
-            questionsContainer.appendChild(createQuestionBlock());
-        });
     });
 </script>
+</body>
+</html>
+
 {% endblock %}
