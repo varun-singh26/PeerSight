@@ -1,199 +1,86 @@
-{%extends 'main/base.html'%}
+{%extends 'shared/base.html'%}
 {%block title%}Create Form{%endblock%}
-{% block nav %}
+{%block extra_head%}
+  {% load static %}
+  <style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: #f5f5f5;
+        margin: 0;
+        padding: 20px;
+    }
 
+    .container {
+        max-width: 800px;
+        margin: auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
 
-<nav
-class="flex flex-col gap-2 px-0 py-5 bg-gray-800 fixed top-0 left-0 h-full w-[300px]"
-id="sidebar"
->
-    <ul class="w-full">
-        <li>
-          <a
-            href="#"
-            class="flex gap-4 items-center px-6 py-3 cursor-pointer duration-[0.2s] transition-[background-color] hover:bg-gray-700 max-md:px-5 max-md:py-2.5 max-sm:px-4 max-sm:py-3"
-            data-nav-item
-          >
-            <i class="ti ti-home text-2xl text-white"></i>
-            <span class="text-base font-medium text-white max-md:text-sm"
-              >Admin Dashboard</span
-            >
-          </a>
-        </li>
-        <li>
-          <a
-            href="#"
-            class="flex gap-4 items-center px-6 py-3 cursor-pointer duration-[0.2s] transition-[background-color] hover:bg-gray-700 max-md:px-5 max-md:py-2.5 max-sm:px-4 max-sm:py-3"
-            data-nav-item
-          >
-            <i class="ti ti-book text-2xl text-white"></i>
-            <span class="text-base font-medium text-white max-md:text-sm"
-              >Your Classes</span
-            >
-          </a>
-        </li>
-        <li>
-          <a
-            href="{% url 'courses:manage_courses' %}"
-            class="flex gap-4 items-center px-6 py-3 cursor-pointer duration-[0.2s] transition-[background-color] hover:bg-gray-700 max-md:px-5 max-md:py-2.5 max-sm:px-4 max-sm:py-3"
-            data-nav-item
-          >
-            <i class="ti ti-layout-grid text-2xl text-white"></i>
-            <span class="text-base font-medium text-white max-md:text-sm"
-              >Manage Courses</span
-            >
-          </a>
-        </li>
-        <li>
-          <a
-            href="#"
-            class="flex gap-4 items-center px-6 py-3 cursor-pointer duration-[0.2s] transition-[background-color] hover:bg-gray-700 max-md:px-5 max-md:py-2.5 max-sm:px-4 max-sm:py-3"
-            data-nav-item
-          >
-            <i class="ti ti-users text-2xl text-white"></i>
-            <span class="text-base font-medium text-white max-md:text-sm"
-              >Manage Teams</span
-            >
-          </a>
-        </li>
-        <li>
-          <a
-          href="{% url 'manage_forms' %}"
-            class="flex gap-4 items-center px-6 py-3 cursor-pointer duration-[0.2s] transition-[background-color] hover:bg-gray-700 max-md:px-5 max-md:py-2.5 max-sm:px-4 max-sm:py-3"
-            data-nav-item
-          >
-            <i class="ti ti-list text-2xl text-white"></i>
-            <span class="text-base font-medium text-white max-md:text-sm"
-              >Manage Forms</span
-            >
-          </a>
-        </li>
-        <li>
-          <a
-          href="{% url 'create_form' %}"
-            class="flex gap-4 items-center px-6 py-3 cursor-pointer duration-[0.2s] transition-[background-color] hover:bg-gray-700 max-md:px-5 max-md:py-2.5 max-sm:px-4 max-sm:py-3"
-            data-nav-item
-          >
-            <i class="ti ti-plus text-2xl text-white"></i>
-            <span class="text-base font-medium text-white max-md:text-sm"
-              >Create Form</span
-            >
-          </a>
-        </li>
-        <li>
-          <a
-            href="#"
-            class="flex gap-4 items-center px-6 py-3 cursor-pointer duration-[0.2s] transition-[background-color] hover:bg-gray-700 max-md:px-5 max-md:py-2.5 max-sm:px-4 max-sm:py-3"
-            data-nav-item
-          >
-            <i class="ti ti-chart-dots text-2xl text-white"></i>
-            <span class="text-base font-medium text-white max-md:text-sm"
-              >View/Evaluate Responses</span
-            >
-          </a>
-        </li>
-        <li>
-          <a
-            href="#"
-            class="flex gap-4 items-center px-6 py-3 cursor-pointer duration-[0.2s] transition-[background-color] hover:bg-gray-700 max-md:px-5 max-md:py-2.5 max-sm:px-4 max-sm:py-3"
-            data-nav-item
-          >
-            <i class="ti ti-mail text-2xl text-white"></i>
-            <span class="text-base font-medium text-white max-md:text-sm"
-              >Manage Reminders</span
-            >
-          </a>
-        </li>
-    </ul>
-</nav>
-{% endblock %}
+    h2 {
+        font-size: 2rem;
+        margin-bottom: 10px;
+    }
+
+    input, select, textarea {
+        width: 100%;
+        padding: 10px;
+        margin: 8px 0;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 1rem;
+    }
+
+    button {
+        padding: 10px 20px;
+        background-color: #333;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #555;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .header {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .question-block {
+        margin-top: 15px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+    }
+
+    .add-question-btn {
+        display: inline-block;
+        margin: 10px 0;
+    }
+
+    .multiple-choice-options {
+        display: none;
+    }
+</style>
+
+{%endblock%}
 
 {% block content %}
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Form</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f5f5f5;
-            margin: 0;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        h2 {
-            font-size: 2rem;
-            margin-bottom: 10px;
-        }
-
-        input, select, textarea {
-            width: 100%;
-            padding: 10px;
-            margin: 8px 0;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            font-size: 1rem;
-        }
-
-        button {
-            padding: 10px 20px;
-            background-color: #333;
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #555;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .question-block {
-            margin-top: 15px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background-color: #f9f9f9;
-        }
-
-        .add-question-btn {
-            display: inline-block;
-            margin: 10px 0;
-        }
-
-        .multiple-choice-options {
-            display: none;
-        }
-    </style>
-</head>
-<body>
 <div class="container">
     <div class="header">
         <h2>Create a New Form</h2>
     </div>
-    <form method="POST" action="{% url 'create_form' %}">
+    <form method="POST" action="{% url 'main:create_form' %}">
         {% csrf_token %}
         <div class="form-group">
             <label>Form Title:</label>
@@ -271,7 +158,4 @@ id="sidebar"
         questionsContainer.appendChild(createQuestionBlock());
     });
 </script>
-</body>
-</html>
-
 {% endblock %}

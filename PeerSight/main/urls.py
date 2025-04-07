@@ -2,6 +2,8 @@ from django.urls import path
 
 from . import views
 
+app_name = 'main'  # This is the namespace for the app. It allows us to use the same URL names in different apps without conflict.
+
 #Render specific view from the views file based on the path
 urlpatterns = [
     #path("", views.landing, name='landing'),

@@ -14,9 +14,9 @@ from courses.models import Course, Team
 def route_user(request):
     user = request.user
     if user.role == "professor":
-        return redirect("admin_landing")
+        return redirect("main:admin_landing")
     else:
-        return redirect("student_landing")
+        return redirect("main:student_landing")
 
 def admin_landing(request):
     if request.user.is_authenticated:
@@ -114,7 +114,7 @@ def create_form_view(request):
                                 choice_text=choice_text
                             )
         
-        return redirect('manage_forms')
+        return redirect('main:manage_forms')
     
     # Get all courses and teams for the template
     courses = Course.objects.all()
@@ -148,7 +148,7 @@ def fill_form_view(request, form_id):
             answer = request.POST.get(f'question_{question.id}')
             if answer is not None:
                 responses.append((question.question_text, answer))
-        return redirect('thank_you_page') 
+        return redirect('main:thank_you_page') 
     return render(request, 'main/fill_form.html', {'form': form, 'questions': questions})
 
 def thank_you_page(request):

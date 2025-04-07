@@ -1,113 +1,7 @@
-{% extends "courses/base.html" %}
+{% extends "shared/base.html" %}
 
 {% block title %}Manage Your Forms{% endblock %}
 
-<!--Administrator sidebar-->
-{% block nav %}
-<nav
-    class="flex flex-col gap-2 px-0 py-5 bg-gray-800 w-[300px] min-h-screen"
-    id="sidebar"
->
-    <ul class="w-full">
-        <li>
-          <a
-            href="#"
-            class="flex gap-4 items-center px-6 py-3 cursor-pointer duration-[0.2s] transition-[background-color] hover:bg-gray-700 max-md:px-5 max-md:py-2.5 max-sm:px-4 max-sm:py-3"
-            data-nav-item
-          >
-            <i class="ti ti-home text-2xl text-white"></i>
-            <span class="text-base font-medium text-white max-md:text-sm"
-              >Admin Dashboard</span
-            >
-          </a>
-        </li>
-        <li>
-          <a
-            href="#"
-            class="flex gap-4 items-center px-6 py-3 cursor-pointer duration-[0.2s] transition-[background-color] hover:bg-gray-700 max-md:px-5 max-md:py-2.5 max-sm:px-4 max-sm:py-3"
-            data-nav-item
-          >
-            <i class="ti ti-book text-2xl text-white"></i>
-            <span class="text-base font-medium text-white max-md:text-sm"
-              >Your Classes</span
-            >
-          </a>
-        </li>
-        <li>
-          <a
-            href="{% url 'courses:manage_courses' %}"
-            class="flex gap-4 items-center px-6 py-3 cursor-pointer duration-[0.2s] transition-[background-color] hover:bg-gray-700 max-md:px-5 max-md:py-2.5 max-sm:px-4 max-sm:py-3"
-            data-nav-item
-          >
-            <i class="ti ti-layout-grid text-2xl text-white"></i>
-            <span class="text-base font-medium text-white max-md:text-sm"
-              >Manage Courses</span
-            >
-          </a>
-        </li>
-        <li>
-          <a
-            href="#"
-            class="flex gap-4 items-center px-6 py-3 cursor-pointer duration-[0.2s] transition-[background-color] hover:bg-gray-700 max-md:px-5 max-md:py-2.5 max-sm:px-4 max-sm:py-3"
-            data-nav-item
-          >
-            <i class="ti ti-users text-2xl text-white"></i>
-            <span class="text-base font-medium text-white max-md:text-sm"
-              >Manage Teams</span
-            >
-          </a>
-        </li>
-        <li>
-          <a
-          href="{% url 'manage_forms' %}"
-            class="flex gap-4 items-center px-6 py-3 cursor-pointer duration-[0.2s] transition-[background-color] hover:bg-gray-700 max-md:px-5 max-md:py-2.5 max-sm:px-4 max-sm:py-3"
-            data-nav-item
-          >
-            <i class="ti ti-list text-2xl text-white"></i>
-            <span class="text-base font-medium text-white max-md:text-sm"
-              >Manage Forms</span
-            >
-          </a>
-        </li>
-        <li>
-          <a
-          href="{% url 'create_form' %}"
-            class="flex gap-4 items-center px-6 py-3 cursor-pointer duration-[0.2s] transition-[background-color] hover:bg-gray-700 max-md:px-5 max-md:py-2.5 max-sm:px-4 max-sm:py-3"
-            data-nav-item
-          >
-            <i class="ti ti-plus text-2xl text-white"></i>
-            <span class="text-base font-medium text-white max-md:text-sm"
-              >Create Form</span
-            >
-          </a>
-        </li>
-        <li>
-          <a
-            href="#"
-            class="flex gap-4 items-center px-6 py-3 cursor-pointer duration-[0.2s] transition-[background-color] hover:bg-gray-700 max-md:px-5 max-md:py-2.5 max-sm:px-4 max-sm:py-3"
-            data-nav-item
-          >
-            <i class="ti ti-chart-dots text-2xl text-white"></i>
-            <span class="text-base font-medium text-white max-md:text-sm"
-              >View/Evaluate Responses</span
-            >
-          </a>
-        </li>
-        <li>
-          <a
-            href="#"
-            class="flex gap-4 items-center px-6 py-3 cursor-pointer duration-[0.2s] transition-[background-color] hover:bg-gray-700 max-md:px-5 max-md:py-2.5 max-sm:px-4 max-sm:py-3"
-            data-nav-item
-          >
-            <i class="ti ti-mail text-2xl text-white"></i>
-            <span class="text-base font-medium text-white max-md:text-sm"
-              >Manage Reminders</span
-            >
-          </a>
-        </li>
-    </ul>
-</nav>
-{% endblock %}
 
 
 {% block content %}
@@ -116,7 +10,7 @@
 
 <!-- Button to create new form -->
 <a
-  href="{% url 'create_form' %}"
+  href="{% url 'main:create_form' %}"
   class="flex items-center justify-center w-[100px] h-[50px] bg-zinc-900 border-black border-[7px] rounded-3xl text-white text-3xl font-bold ml-auto mr-4"
 >
   +
@@ -139,8 +33,8 @@
             {% endif %}
         </div>
         <div class="flex gap-2">
-          <a href="{% url 'form_detail' form.id %}" class="bg-zinc-900 text-white px-4 py-2 rounded-md hover:bg-opacity-90 transition">View</a>
-          <a href="{% url 'fill_form' form.id %}" class="bg-zinc-900 text-white px-4 py-2 rounded-md hover:bg-opacity-90 transition">Fill</a>
+          <a href="{% url 'main:form_detail' form.id %}" class="bg-zinc-900 text-white px-4 py-2 rounded-md hover:bg-opacity-90 transition">View</a>
+          <a href="{% url 'main:fill_form' form.id %}" class="bg-zinc-900 text-white px-4 py-2 rounded-md hover:bg-opacity-90 transition">Fill</a>
         </div>
       </div>
     {% endfor %}

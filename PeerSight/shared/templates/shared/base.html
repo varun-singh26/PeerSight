@@ -28,9 +28,14 @@
         {% block extra_head %}{% endblock %}
     </head>
     <body class="flex">
-        {% block nav %} <!-- Block for Sidebar -->
-    
-        {% endblock %}
+        <!-- Dynamically render Sidebar -->
+        {% if request.user.is_authenticated and request.user.role%}
+            {% if request.user.role == "professor" %}
+                {% include 'shared/admin_sidebar.html' %}
+            {% elif request.user.role == "student" %}
+                {% include 'shared/student_sidebar.html' %}
+            {% endif %}
+        {% endif %}
 
         <div id="content" class="main">
             <div class="row justify-content-center">

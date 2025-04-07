@@ -1,4 +1,4 @@
-{% extends "main/base.html" %}
+{% extends "shared/base.html" %}
 {% load socialaccount %} <!-- What does this do -->
 
 
@@ -13,7 +13,6 @@
     <link rel="stylesheet" href="{% static 'users/css/styles.css' %}">
 {% endblock %}
 
-{% block nav %}{% endblock %} <!-- No nav bar for the sign in page -->
 {% block content %}
 <main class="flex flex-col justify-center items-center p-5 mx-auto min-h-screen bg-zinc-900">
     <header>
