@@ -3,7 +3,7 @@
     class="flex flex-col gap-2.5 px-0 py-5 h-screen bg-gray-800 w-[300px] max-md:w-[250px] max-sm:p-2.5 max-sm:w-full max-sm:h-auto"
 >
     <a
-        href="#dashboard"
+        href="{% url 'main:student_landing' %}"
         class="nav-item flex gap-4 items-center px-8 py-4 cursor-pointer duration-[0.3s] transition-[background-color] max-md:px-5 max-md:py-3 max-sm:px-4 max-sm:py-2.5"
     >
         <i class="ti ti-home text-2xl text-white"></i>
@@ -24,7 +24,7 @@
         >
     </a>
     <a
-        href="#forms"
+        href="{% url 'main:student_forms' %}"
         class="nav-item flex gap-4 items-center px-8 py-4 cursor-pointer duration-[0.3s] transition-[background-color] max-md:px-5 max-md:py-3 max-sm:px-4 max-sm:py-2.5"
     >
         <i class="ti ti-list text-2xl text-white"></i>

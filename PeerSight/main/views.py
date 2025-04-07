@@ -4,7 +4,7 @@ from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.forms import modelform_factory, modelformset_factory, inlineformset_factory
 from django.contrib.auth.decorators import login_required
-from .models import Form, Question, Choice
+from .models import Form, Question, Choice, FormResponse, QuestionResponse
 from courses.models import Course, Team
 
 # Create your views here.
@@ -67,6 +67,12 @@ FormForm = modelform_factory(Form, fields=['title'])
 QuestionFormSet = modelformset_factory(Question, fields=('question_text', 'question_type'), extra=3)
 
 @login_required
+def student_forms_view(request):
+    # Get all forms for courses where the user is enrolled as a student
+    student_forms = Form.objects.filter(course__students__email=request.user.email).order_by('-created_at')
+    return render(request, 'main/student_forms.html', {'forms': student_forms})
+
+@login_required
 def create_form_view(request):
     if request.method == 'POST':
         # Get the deadline value, only set it if it's not empty
@@ -74,11 +80,15 @@ def create_form_view(request):
         if not deadline:
             deadline = None
 
+        # Get the selected course
+        course_id = request.POST.get('course')
+        course = Course.objects.get(id=course_id)
+
         form_instance = Form.objects.create(
             title=request.POST.get('title'),
             description=request.POST.get('description'),
             deadline=deadline,
-            course_id=request.POST.get('course'),
+            course=course,
             creator=request.user
         )
         
@@ -117,7 +127,7 @@ def create_form_view(request):
         return redirect('main:manage_forms')
     
     # Get all courses and teams for the template
-    courses = Course.objects.all()
+    courses = Course.objects.filter(creator=request.user)  # Only show professor's courses
     teams = Team.objects.all()
     
     return render(request, 'main/create_form.html', {
@@ -139,17 +149,90 @@ def form_detail_view(request, form_id):
 
 def fill_form_view(request, form_id):
     form = get_object_or_404(Form, id=form_id)
-
     questions = form.questions.all()
 
     if request.method == 'POST':
-        responses = []
+        # Create the form response
+        form_response = FormResponse.objects.create(
+            form=form,
+            student=request.user
+        )
+        
+        # Save each question response
         for question in questions:
             answer = request.POST.get(f'question_{question.id}')
             if answer is not None:
-                responses.append((question.question_text, answer))
-        return redirect('main:thank_you_page') 
+                question_response = QuestionResponse(
+                    form_response=form_response,
+                    question=question
+                )
+                
+                if question.question_type == 'text':
+                    question_response.answer_text = answer
+                elif question.question_type == 'multiple_choice':
+                    question_response.selected_choice_id = answer
+                elif question.question_type == 'rating':
+                    question_response.rating_value = int(answer)
+                
+                question_response.save()
+        
+        return redirect('main:student_forms')
     return render(request, 'main/fill_form.html', {'form': form, 'questions': questions})
+
+@login_required
+def view_responses(request):
+    # Only allow professors to view responses
+    if request.user.role != 'professor':
+        return redirect('main:student_landing')
+    
+    # Get all forms created by the professor
+    forms = Form.objects.filter(creator=request.user).order_by('-created_at')
+    
+    # Get responses for each form
+    form_responses = {}
+    for form in forms:
+        responses = form.responses.all().select_related('student')
+        form_responses[form] = responses
+    
+    return render(request, 'main/view_responses.html', {
+        'form_responses': form_responses
+    })
 
 def thank_you_page(request):
     return render(request, 'main/thank_you.html')
+
+@login_required
+def student_responses(request):
+    # Only allow professors to view responses
+    if request.user.role != 'professor':
+        return redirect('main:student_landing')
+    
+    # Get all responses for forms created by the professor, ordered by submission date
+    responses = FormResponse.objects.filter(
+        form__creator=request.user
+    ).select_related('form', 'student').order_by('-submitted_at')
+    
+    return render(request, 'main/student_responses.html', {
+        'responses': responses
+    })
+
+@login_required
+def student_response_details(request, response_id):
+    # Only allow professors to view responses
+    if request.user.role != 'professor':
+        return redirect('main:student_landing')
+    
+    # Get the response and its details
+    response = get_object_or_404(
+        FormResponse.objects.select_related('form', 'student'),
+        id=response_id,
+        form__creator=request.user
+    )
+    
+    # Get all question responses for this form submission
+    question_responses = response.question_responses.all().select_related('question')
+    
+    return render(request, 'main/student_response_details.html', {
+        'response': response,
+        'question_responses': question_responses
+    })
