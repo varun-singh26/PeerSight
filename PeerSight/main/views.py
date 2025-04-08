@@ -6,6 +6,8 @@ from django.forms import modelform_factory, modelformset_factory, inlineformset_
 from django.contrib.auth.decorators import login_required
 from .models import Form, Question, Choice, FormResponse, QuestionResponse
 from courses.models import Course, Team
+from django.core.paginator import Paginator
+
 
 # Create your views here.
 
@@ -20,21 +22,33 @@ def route_user(request):
 
 def admin_landing(request):
     if request.user.is_authenticated:
-       username = request.user.username
+        username = request.user.username
 
-       try:
-           social_account = request.user.socialaccount_set.filter(provider='google').first()
-           if social_account:
-               username = social_account.extra_data.get('name', username)
-       except:
-           pass
+        try:
+            social_account = request.user.socialaccount_set.filter(provider='google').first()
+            if social_account:
+                username = social_account.extra_data.get('name', username)
+        except:
+            pass
+
+        user_courses = Course.objects.filter(creator=request.user)
+        
+        user_forms = Form.objects.filter(creator=request.user).order_by('-created_at')  
+        
+        paginator = Paginator(user_forms, 3)  
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        context = {
+            'username': username,
+            'user_courses': user_courses,
+            'page_obj': page_obj,
+        }
+        
+        return render(request, 'main/admin.html', context)
     else:
-       username = "Guest"
-    context = {
-        'username': username,
-    }
-
-    return render(request, 'main/admin.html', context)
+        return render(request, 'main/admin.html', {'username': 'Guest'})
+    
 
 def student_landing(request):
     if request.user.is_authenticated:

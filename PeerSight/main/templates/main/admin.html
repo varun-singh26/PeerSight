@@ -7,76 +7,59 @@
 {% endblock %}
 
 {% block content %}
-<div class = "dashboard-container">
+<div class="container mx-auto p-4">
 
-    <!-- Role Banner -->
-    <div class="bg-blue-100 border border-blue-300 text-blue-800 text-sm px-4 py-3 rounded mb-4" role="alert">
-        You are logged in as a <strong>{{ request.user.role|title }}</strong>.
-    </div>
-     <h2>Hello <strong> Administrator </strong> {{ username }}, your current classes are:</h2>
+  <!-- Role Banner -->
+  <div class="bg-blue-100 border border-blue-300 text-blue-800 text-sm px-4 py-3 rounded mb-4 shadow">
+      You are logged in as a <strong>{{ request.user.role|title }}</strong>.
+  </div>
 
-    <div class = "card-container">
-        <div class = class-card> 
-            <span class = "class-tag">CSCI3356.01</span>
-            <span class = "class-name">Software Engineering</span>
-            <span class = "class-tag">Spring 2025</span>
-        </div>
-        <div class = "class-card"> 
-            <span class = "class-tag">CSCI3356.02</span>
-            <span class = "class-name">Software Engineering</span>
-            <span class = "class-tag">Spring 2025</span>
-        </div>
-        <div class = "class-card"> 
-            <span class = "class-tag">CSCI1102.01</span>
-            <span class = "class-name">Computer Science I</span>
-            <span class = "class-tag">Fall 2024</span>
-        </div>
-        <div class = "class-card"> 
-            <span class = "class-tag">CSCI1102.02</span>
-            <span class = "class-name">Computer Science I</span>
-            <span class = "class-tag">Fall 2024</span>
-        </div>
-    </div>
-    
-    <div class = "form-section"> 
-        <h2 style = "font-size:15px">Your Forms:</h2>
-        <h2 style = "font-size:12px">Sort By: Deadline</h2>
-    </div>
+  <!-- Courses Display -->
+  <h2 class="text-lg font-bold mb-4">Hello <strong>Administrator</strong> {{ username }}, your current classes are:</h2>
+  
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+      {% for course in user_courses %}
+      <div class="bg-white border border-gray-200 rounded-lg p-4 shadow hover:shadow-lg transition duration-200">
+          <h3 class="font-bold text-lg mb-2">{{ course.name }}</h3>
+          <p class="text-sm text-gray-600">{{ course.subject }}</p>
+          <p class="text-sm text-gray-500">{{ course.semester }}</p>
+          <p class="text-sm text-gray-500">{{ course.course_id }}</p>
+      </div>
+      {% endfor %}
+  </div>
+  
+  <div class="bg-white p-6 rounded-lg shadow mb-6">
+      <table class="w-full table-auto border-collapse">
+          <thead>
+              <tr>
+                  <th class="text-left px-4 py-2">Name</th>
+                  <th class="text-left px-4 py-2">Class</th>
+                  <th class="text-left px-4 py-2">Students Submitted</th>
+                  <th class="text-left px-4 py-2">Due Date</th>
+              </tr>
+          </thead>
+          <tbody>
+              {% for form in page_obj %}
+              <tr class="border-b">
+                  <td class="px-4 py-2">{{ form.title }}</td>
+                  <td class="px-4 py-2">{{ form.course.name }}</td>
+                  <td class="px-4 py-2">{{ form.responses.count }}/{{ form.course.students.count }}</td>
+                  <td class="px-4 py-2">{{ form.deadline|date:"D M j, Y, P" }}</td>
+              </tr>
+              {% endfor %}
+          </tbody>
+      </table>
 
-    <div class = "form-container"> 
-        <div class="forms">
-            <h3>Name</h3>
-            <p>Delivery 2 Peer Review</p>
-            <p>Delivery 2 Peer Review</p>
-            <p>Delivery 1 Peer Review</p>
-        </div>
-
-        <div class="forms">
-            <h3>Class</h3>
-            <p>CSCI3356.01</p>
-            <p>CSCI3356.02</p>
-            <p>CSCI3356.01</p>
-        </div>
-
-        <div class="forms">
-            <h3>Students Submitted</h3>
-            <p style = "color:#E42D2D">29/38</p>
-            <p style = "color:#E42D2D">25/31</p>
-            <p style = "color:#34A853;">38/38</p>
-        </div>
-
-        <div class="forms">
-            <h3>Due Date</h3>
-            <p>Friday 11:59 PM</p>
-            <p>Friday 11:59 PM</p>
-            <p>2/14/2025</p>
-        </div>
-
-    </div>
-    <div class="logout">
-        <a href="/logout">
-            <button type="button" class="logout-button">Logout</button>
-        </a>
-    </div>
+      <div class="flex justify-between mt-4">
+          {% if page_obj.has_previous %}
+              <a href="?page={{ page_obj.previous_page_number }}" class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">Previous</a>
+          {% endif %}
+          {% if page_obj.has_next %}
+              <a href="?page={{ page_obj.next_page_number }}" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Load More</a>
+          {% endif %}
+      </div>
+  </div>
 </div>
+
+
 {% endblock %}
