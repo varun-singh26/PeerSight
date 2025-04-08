@@ -2,6 +2,7 @@ from django.db import models
 from django.conf import settings
 from courses.models import Course, Team
 
+# Removing null = True and blank = True from the course field in Form model. Every form MUST BELONG to a course
 class Form(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
