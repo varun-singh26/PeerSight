@@ -17,9 +17,13 @@ urlpatterns = [
     path('create-form/', views.create_form_view, name='create_form'),
     path("manage-forms/", views.manage_forms_view, name='manage_forms'),
     path("forms/<int:form_id>/", views.form_detail_view, name='form_detail'),
-    path("forms/<int:form_id>/fill/", views.fill_form_view, name="fill_form"),
+    path('fill-form/<int:form_id>/', views.fill_form_view, name='fill_form'),
     path('thank-you/', views.thank_you_page, name='thank_you_page'),
+    path('view-responses/', views.view_responses, name='view_responses'),
+    path('student-responses/', views.student_responses, name='student_responses'),
+    path('student-responses/<int:response_id>/', views.student_response_details, name='student_response_details'),
     #path("course-modification/", views.course_modification, name='course_modification'),
+    path('forms/', views.student_forms_view, name='student_forms'),
 
 
 
