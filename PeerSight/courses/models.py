@@ -28,6 +28,14 @@ class Student(models.Model):
     graduation_year = models.PositiveIntegerField()
     email = models.EmailField(unique=True)
     courses = models.ManyToManyField(Course, related_name='students', blank=True)
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL, 
+        on_delete=models.CASCADE, 
+        related_name='student_profile', 
+        null=False
+    ) 
+    #Connect each student to a user profile
+    # Add any additional fields you need for the student profile                                                    # ie. student = request.user.student_profile
 
     def __str__(self):
         return f"{self.name} ({self.student_id})"
