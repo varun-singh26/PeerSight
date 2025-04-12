@@ -4,14 +4,13 @@
 {% block content %}
 <div class="max-w-4xl mx-auto bg-white shadow-md rounded-xl p-6 mt-12">
         <div class="flex justify-between items-center mb-4">
-        <h1 class="text-3xl font-bold">{{ student.get_full_name }}</h1>
+        <h1 class="text-3xl font-bold">{{ form.title }}</h1>
         <div class="text-xl font-semibold text-gray-700">
             Average Score: {{ cumulative_score|floatformat:1 }} / 5
         </div>
     </div>
 
-    <p class="text-gray-700">Form: {{ form.title }}</p>
-    <p class="text-sm text-gray-500 mt-1">{{ form.description }}</p>
+    <p class="text-sm text-gray-500 mt-1">Form Description: {{ form.description }}</p>
 
     <hr class="my-6" />
 
