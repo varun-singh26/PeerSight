@@ -1,12 +1,13 @@
 from django.shortcuts import render, redirect,  get_object_or_404
 from django.http import HttpResponse
-from django.contrib.auth import logout
+from django.contrib.auth import logout, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.forms import modelform_factory, modelformset_factory, inlineformset_factory
 from django.contrib.auth.decorators import login_required
 from .models import Form, Question, Choice, FormResponse, QuestionResponse
 from courses.models import Course, Team
 from django.core.paginator import Paginator
+from django.db.models import Avg
 
 
 # Create your views here.
@@ -230,6 +231,8 @@ def student_responses(request):
         'responses': responses
     })
 
+User = get_user_model()
+
 @login_required
 def student_response_details(request, response_id):
     # Only allow professors to view responses
@@ -249,4 +252,51 @@ def student_response_details(request, response_id):
     return render(request, 'main/student_response_details.html', {
         'response': response,
         'question_responses': question_responses
+    })
+
+@login_required
+def student_feedback_view(request, form_id, student_id):
+
+    form = get_object_or_404(Form, id=form_id)
+    student = get_object_or_404(User, id=student_id)
+
+    # Average scores for likert/rating questions
+    questions = form.questions.filter(question_type='likert')
+    average_scores = []
+
+    total_score = 0
+    count = 0
+
+    for question in questions:
+        avg = QuestionResponse.objects.filter(
+            question=question,
+            form_response__form=form,
+            form_response__student=student,
+            rating_value__isnull=False
+        ).aggregate(Avg('rating_value'))['rating_value__avg']
+
+        if avg is not None:
+            average_scores.append({
+                'question': question.question_text,
+                'average': avg
+            })
+            total_score += avg
+            count += 1
+
+    cumulative_score = total_score / count if count > 0 else 0
+
+    comments_qs = QuestionResponse.objects.filter(
+        question__form=form,
+        form_response__student=student,
+        question__question_type='text'
+    ).exclude(answer_text="")
+
+    comments = [c.answer_text for c in comments_qs]
+
+    return render(request, 'main/student_feedback.html', {
+        'student': student,
+        'form': form,
+        'average_scores': average_scores,
+        'comments': comments,
+        'cumulative_score': cumulative_score,
     })

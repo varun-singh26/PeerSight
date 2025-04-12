@@ -3,6 +3,9 @@ from .models import Course, Student, Team
 from main.decorators import professor_required
 from django.db import IntegrityError
 from django.db.models import Q
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 # Create your views here.
 
@@ -20,6 +23,11 @@ def add_student_view(request, course_id):
        team_id = request.POST.get('team', None)
        new_team_name = request.POST.get('new_team_name', None) 
 
+       try:
+            user = User.objects.get(email=email)
+       except User.DoesNotExist:
+           user = User.objects.create_user(username=email.split('@')[0], email=email, password=User.objects.make_random_password())
+
        student = Student.objects.filter(Q(student_id=student_id) | Q(email=email)).first()
 
        if student:
@@ -33,6 +41,7 @@ def add_student_view(request, course_id):
            # Create a new student w/ the specified id and email 
            try:
                student = Student.objects.create(
+                   user=user,
                    name=name,
                    student_id=student_id,
                    email=email,
@@ -143,6 +152,8 @@ def add_member_view(request, course_id, team_id):
             
         team.members.add(student)
         return redirect('courses:manage_teams', course_id=course.id)
+    
+
     
 
 

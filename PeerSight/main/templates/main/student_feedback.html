@@ -1,0 +1,52 @@
+{% extends "shared/base.html" %}
+{% block title %}Peer Evaluation Summary for {{ student.get_full_name }}{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto bg-white shadow-md rounded-xl p-6 mt-12">
+        <div class="flex justify-between items-center mb-4">
+        <h1 class="text-3xl font-bold">{{ student.get_full_name }}</h1>
+        <div class="text-xl font-semibold text-gray-700">
+            Average Score: {{ cumulative_score|floatformat:1 }} / 5
+        </div>
+    </div>
+
+    <p class="text-gray-700">Form: {{ form.title }}</p>
+    <p class="text-sm text-gray-500 mt-1">{{ form.description }}</p>
+
+    <hr class="my-6" />
+
+    <h2 class="text-xl font-semibold mb-4">Average Scores</h2>
+    <div class="overflow-x-auto bg-gray-50 p-4 rounded-lg shadow">
+        <table class="min-w-full table-auto">
+            <thead>
+                <tr>
+                    <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Question</th>
+                    <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Average Rating</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for score in average_scores %}
+                <tr class="border-b">
+                    <td class="px-6 py-3 text-sm text-gray-900">{{ score.question }}</td>
+                    <td class="px-6 py-3 text-sm text-gray-900">{{ score.average|floatformat:1 }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if comments %}
+    <hr class="my-6" />
+    <h2 class="text-xl font-semibold mb-4">Comments from Team Members</h2>
+    <ul class="space-y-2">
+        {% for comment in comments %}
+        <li class="bg-gray-100 p-4 rounded-lg shadow">{{ comment }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <div class="mt-8">
+        <a href="{% url 'main:student_forms' %}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Back to Forms</a>
+    </div>
+</div>
+{% endblock %}
