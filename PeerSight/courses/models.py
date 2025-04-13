@@ -9,7 +9,7 @@ class Course(models.Model):
         settings.AUTH_USER_MODEL,
         limit_choices_to={'role': 'professor'},
         on_delete=models.CASCADE,
-        related_name='courses'
+        related_name='courses_created'
     )
     name = models.CharField(max_length=200)
     subject = models.CharField(max_length=100)
@@ -22,7 +22,7 @@ class Course(models.Model):
     def __str__(self):
         return f"{self.name} ({self.course_id})"
     
-class Student(models.Model):
+'''class Student(models.Model):
     name = models.CharField(max_length=100)
     student_id = models.CharField(max_length=20, unique=True)
     graduation_year = models.PositiveIntegerField()
@@ -35,15 +35,17 @@ class Student(models.Model):
         null=False
     ) 
     #Connect each student to a user profile
-    # Add any additional fields you need for the student profile                                                    # ie. student = request.user.student_profile
+    # Add any additional fields you need for the student profile   # ie. student = request.user.student_profile
+
 
     def __str__(self):
         return f"{self.name} ({self.student_id})"
+'''
     
 class Team(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name = 'teams')
     name = models.CharField(max_length=100)
-    members = models.ManyToManyField(Student, related_name='teams', blank=True)
+    members = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='teams', limit_choices_to={"role": "student"}, blank=True)
 
     def __str__(self):
         return f"{self.name} ({self.course.name})"

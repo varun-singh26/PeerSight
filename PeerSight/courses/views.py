@@ -1,14 +1,96 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Course, Student, Team
+from .models import Course, Team
 from main.decorators import professor_required
 from django.db import IntegrityError
 from django.db.models import Q
+from users.models import CustomUser # use your actual import path
+
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
 # Create your views here.
 
+@professor_required
+def add_student_view(request, course_id):
+    course = get_object_or_404(Course, id=course_id, creator=request.user)
+    teams = course.teams.all()
+
+    if request.method == 'POST':
+        name = request.POST['name']
+        student_id = request.POST['student_id']
+        graduation_year = request.POST['graduation_year']
+        email = request.POST['email']
+        team_id = request.POST.get('team', None)
+        new_team_name = request.POST.get('new_team_name', None)
+
+        # Look for an existing user with this email or student ID
+        student = CustomUser.objects.filter(
+            Q(student_id=student_id) | Q(email=email),
+            role='student'
+        ).first()
+
+        if student:
+            # Update missing fields if possible
+            updated = False
+
+            if not student.student_id and student_id:
+                student.student_id = student_id
+                updated = True
+            
+            if not student.email and email:
+                student.email = email
+                updated = True
+            
+            if updated:
+                student.save()
+
+        else:
+            try:
+                # Prevent duplicate usernames from being created
+                base_usernmame = email.split('@')[0]
+                username = base_usernmame
+                counter = 1
+                while CustomUser.objects.filter(username=username).exists():
+                    username = f"{base_usernmame}{counter}"
+                    counter += 1
+                
+                student = CustomUser.objects.create_user(
+                    username=username, # auto-generate username
+                    email=email,
+                    role='student',
+                    name=name,
+                    student_id=student_id,
+                    graduation_year=graduation_year,
+                )
+                student.set_unusable_password()  # Set password to unusable (users sign in w/ Google Auth, no password needed for our platform)
+                student.save()
+            except IntegrityError:
+                student = CustomUser.objects.filter(
+                    Q(student_id=student_id) | Q(email=email),
+                    role='student'
+                ).first()
+
+            
+        # Add to course
+        student.courses.add(course)
+
+        # Add to team
+        if new_team_name:
+            team = Team.objects.create(course=course, name=new_team_name)
+            team.members.add(student)
+        elif team_id:
+            team = Team.objects.get(id=team_id)
+            team.members.add(student)
+
+        return redirect('courses:course_detail', course_id=course.id)
+    
+    return render(request, "courses/add_student.html", {
+        'course': course,
+        'teams': teams
+    })
+
+'''
 @professor_required
 def add_student_view(request, course_id):
     course = get_object_or_404(Course, id=course_id, creator=request.user)
@@ -74,11 +156,25 @@ def add_student_view(request, course_id):
         'course': course,
         'teams': teams
     })
+'''
 
 @professor_required
 def course_detail_view(request, course_id):
     course = get_object_or_404(Course, id=course_id, creator=request.user)
-    students = course.students.all()
+    students = course.students.all().prefetch_related('teams')
+
+    # Create a mapping: student.id -> their team (for this this course only)
+    student_team_map = {}
+    for student in students:
+        team = student.teams.filter(course=course).first()
+        student_team_map[student.id] = team # This will be none if no teams exists for this student in this course
+    
+    return render(request, 'courses/course_detail.html', {
+        'course': course,
+        'students': students,
+        'student_team_map': student_team_map
+    })
+
     return render(request, 'courses/course_detail.html', {
         'course': course,
         'students': students
@@ -143,13 +239,17 @@ def add_member_view(request, course_id, team_id):
             #messages.error(request, "Student ID is missing.")
             return redirect('courses:manage_teams', course_id=course_id)
         
-        student = get_object_or_404(Student, id=student_id)
+        # Grab the student (CustomUser) by ID and confirm they're a student
+        student = get_object_or_404(CustomUser, id=student_id, role='student')
 
         # Enforce one-team-per-course rule
-        for t in course.teams.all():
-            if student in t.members.all():
-                return redirect("courses:manage_teams", course_id=course.id)
-            
+        already_on_team = course.teams.filter(members=student).exists()
+        if already_on_team:
+            # Optionally flash a warning message here
+            #messages.error(request, "Student is already on a team in this course.")
+            return redirect('courses:manage_teams', course_id=course.id)
+        
+        # Add student to this team             
         team.members.add(student)
         return redirect('courses:manage_teams', course_id=course.id)
     

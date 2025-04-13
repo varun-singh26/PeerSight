@@ -1,0 +1,18 @@
+{% load dict_filters %}
+
+<h2>Welcome, {{ student.username }}</h2>
+
+{% for course in courses %}
+  <div>
+    <h3>{{ course.name }} ({{ course.course_id }})</h3>
+    <p>Your team: {{ course_team_map|get_item:course.id }}</p>
+
+    <ul>
+      {% for form in forms_by_course|get_item:course.id %}
+        <li>{{ form.title }} - Due: {{ form.deadline }}</li>
+      {% empty %}
+        <li>No forms yet.</li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endfor %}

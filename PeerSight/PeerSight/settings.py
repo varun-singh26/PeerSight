@@ -30,7 +30,7 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
-SITE_ID= 2 # Ensure this matches your Django Site ID (Need to match the site ID of 127.0.0.1 which is what the preview server runs on)
+SITE_ID= 3 # Ensure this matches your Django Site ID (Need to match the site ID of 127.0.0.1 which is what the preview server runs on)
             
 
 INSTALLED_APPS = [
@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "allauth.socialaccount.providers.github",
     "teams",
     "shared",
+    "student",
     "tailwind",
 ]
 

@@ -1,4 +1,5 @@
 {% extends "shared/base.html" %}
+{% load custom_tags %}
 {% block title %}{{ course.name }} - Details{% endblock %}
 
 
@@ -23,18 +24,16 @@
     </div>
     <ul class="mt-4 space-y-2 mb-4">
       {% for student in students %}
-        <li class="bg-gray-100 p-3 rounded">{{ student.name }} — {{ student.student_id }} ({{ student.email }}) 
-          {% with student_teams=student.teams.all %}
-          {% if student_teams %}
+        <li class="bg-gray-100 p-3 rounded">
+          {{ student.name }} — {{ student.student_id }} ({{ student.email }}) 
+          {% with team=student_team_map|get_item:student.id %}
             —
-            {% for team in student_teams %}
+            {% if team %}
               {{ team.name }}
-              {% if not forloop.last %}, {% endif %}
-            {% endfor %}
-          {% else %}
-            — No Team Assigned
-          {% endif %}
-        {% endwith %}
+            {% else %}
+              No Team Assigned
+            {% endif %}
+          {% endwith %}
         </li>
       {% empty %}
         <li>No students enrolled yet</li>

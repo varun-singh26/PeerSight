@@ -92,7 +92,7 @@
         </div>
         <div class="form-group">
             <label>Select Class:</label>
-            <select name="course">
+            <select name="course" id="course-select">
                 <option value="">Choose a class...</option>
                 {% for course in courses %}
                     <option value="{{ course.id }}">{{ course.name }}</option>
@@ -103,14 +103,12 @@
             <label>Deadline:</label>
             <input type="datetime-local" name="deadline">
         </div>
-        <!-- <div class="form-group">
+        <div class="form-group">
             <label>Select Teams:</label>
-            {% for team in teams %}
-                <label>
-                    <input type="checkbox" name="teams" value="{{ team.id }}"> {{ team.name }}
-                </label>
-            {% endfor %}
-        </div> -->
+            <div id="team-checkboxes">
+                <p class="text-gray-500 text-sm">Select a course first to load teams.</p>
+            </div> 
+        </div>
         <div id="questionsContainer"></div>
         <button type="button" class="add-question-btn">+ Add Question</button>
         <button type="submit">Save Form</button>
@@ -156,6 +154,40 @@
     document.querySelector('.add-question-btn').addEventListener('click', function() {
         const questionsContainer = document.getElementById('questionsContainer');
         questionsContainer.appendChild(createQuestionBlock());
+    });
+</script>
+<script>
+    // New logic to load teams dynamically when a course is selected
+    document.getElementById('course-select').addEventListener('change', function () {
+        const courseId = this.value;
+        const teamContainer = document.getElementById('team-checkboxes');
+        teamContainer.innerHTML = ''; // Clear previous teams
+
+        if (!courseId) {
+            teamContainer.innerHTML = '<p class="text-gray-500 text-sm">Select a course first to load teams.</p>';
+            return;
+        }
+
+        fetch(`/ajax/get_teams/${courseId}/`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.length === 0) {
+                    teamContainer.innerHTML = '<p class="text-sm text-red-500">No teams found for this course.</p>';
+                } else {
+                    data.forEach(team => {
+                        const label = document.createElement('label');
+                        label.innerHTML = `
+                            <input type="checkbox" name="teams" value="${team.id}"> ${team.name}
+                        `;
+                        teamContainer.appendChild(label);
+                        teamContainer.appendChild(document.createElement('br'));
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching teams:', error);
+                teamContainer.innerHTML = '<p class="text-sm text-red-500">Error loading teams.</p>';
+            });
     });
 </script>
 {% endblock %}
