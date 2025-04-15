@@ -1,32 +1,27 @@
 {% extends 'shared/base.html' %}
 
 {% block content %}
+<h1 class="text-3xl font-bold mb-5 mt-8 ml-8">Student Responses</h1>
+<hr class="my-4 border-t-4" />
 <div class="flex flex-col gap-8 p-8 bg-gray-100 min-h-screen">
-    <h1 class="text-3xl font-bold text-gray-800">Student Responses</h1>
     
     {% if responses %}
         <div class="grid gap-6">
             {% for response in responses %}
-                <div class="bg-white rounded-lg shadow p-6 hover:shadow-md transition-shadow duration-200">
+                <a href="{% url 'main:student_response_details' response.id %}" class="block bg-white text-black p-8 rounded-xl shadow-md hover:bg-gray-100 transition">
                     <div class="flex justify-between items-start">
                         <div>
-                            <h2 class="text-xl font-semibold text-gray-900 mb-2">{{ response.form.title }}</h2>
-                            <p class="text-sm text-gray-600 mb-1">Submitted by: <span class="font-medium">{{ response.student.username }}</span></p>
-                            <p class="text-sm text-gray-600">Submitted on: {{ response.submitted_at|date:"F j, Y, g:i a" }}</p>
+                            <h2 class="text-2xl font-bold">{{ response.form.title }}</h2>
+                            <p class="text-sm">Submitted by: <span class="font-medium">{{ response.student.username }}</span></p>
+                            <p class="text-sm">Submitted on: {{ response.submitted_at|date:"F j, Y, g:i a" }}</p>
                         </div>
-                        <a 
-                            href="{% url 'main:student_response_details' response.id %}"
-                            class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200 text-sm font-semibold"
-                        >
-                            View Details
-                        </a>
                     </div>
-                </div>
+                </a>
             {% endfor %}
         </div>
     {% else %}
         <div class="bg-white rounded-lg shadow p-6">
-            <p class="text-gray-600">No responses submitted yet.</p>
+            <p>No responses submitted yet.</p>
         </div>
     {% endif %}
 </div>
