@@ -1,4 +1,6 @@
 {% extends 'shared/base.html' %}
+{% load custom_tags %}
+
 
 {% block content %}
 <div class="container mx-auto px-4 py-8">
@@ -9,6 +11,13 @@
             {% for form in forms %}
                 <div class="bg-white rounded-lg shadow-md p-6">
                     <h2 class="text-xl font-semibold mb-2">{{ form.title }}</h2>
+
+                    {% with team=form_team_map|get_item:form.id %}
+                        <p class="text-sm text-gray-700 mb-1">
+                            Course: {{ form.course.name }}<br>
+                            Your Team: {{ team.name }}
+                        </p>
+                    {% endwith %}
                     {% if form.description %}
                         <p class="text-gray-600 mb-4">{{ form.description }}</p>
                     {% endif %}

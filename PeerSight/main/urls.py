@@ -24,7 +24,6 @@ urlpatterns = [
     path('student-responses/<int:response_id>/', views.student_response_details, name='student_response_details'),
     #path("course-modification/", views.course_modification, name='course_modification'),
     path('forms/', views.student_forms_view, name='student_forms'),
-
-
-
+    path('ajax/get_teams/<int:course_id>/', views.get_teams_for_course, name='get_teams_for_course'),
+    path('student-feedback/<int:form_id>/<int:student_id>/', views.student_feedback_view, name='student_feedback'),
 ]

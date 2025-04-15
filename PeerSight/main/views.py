@@ -1,12 +1,16 @@
 from django.shortcuts import render, redirect,  get_object_or_404
 from django.http import HttpResponse
-from django.contrib.auth import logout
+from django.contrib.auth import logout, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.forms import modelform_factory, modelformset_factory, inlineformset_factory
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from .models import Form, Question, Choice, FormResponse, QuestionResponse
+from users.models import CustomUser
 from courses.models import Course, Team
 from django.core.paginator import Paginator
+from django.http import JsonResponse
+from django.db.models import Avg
 
 
 # Create your views here.
@@ -82,9 +86,36 @@ QuestionFormSet = modelformset_factory(Question, fields=('question_text', 'quest
 
 @login_required
 def student_forms_view(request):
+    student = request.user
+
+    #Get all the teams the student is on
+    teams = student.teams.select_related('course').prefetch_related('forms')
+
+    # Build a mapping from form to the team it's assigned to (from this student's teams)
+    form_team_map = {}
+    student_forms = set()
+
+    for team in teams:
+        for form in team.forms.all():
+            student_forms.add(form)
+            form_team_map[form.id] = team # This works assuming each form is assigned to only one team per student
+    
+    #Convert to list and sort
+    student_forms = sorted(list(student_forms), key=lambda f: f.created_at, reverse=True) #
+
+    return render(request, 'main/student_forms.html', {
+        'forms': student_forms,
+        'form_team_map': form_team_map,
+    })
+
     # Get all forms for courses where the user is enrolled as a student
     student_forms = Form.objects.filter(course__students__email=request.user.email).order_by('-created_at')
     return render(request, 'main/student_forms.html', {'forms': student_forms})
+
+@login_required
+def get_teams_for_course(request, course_id):
+    teams = Team.objects.filter(course_id=course_id).values('id', 'name')
+    return JsonResponse(list(teams), safe=False)
 
 @login_required
 def create_form_view(request):
@@ -103,7 +134,8 @@ def create_form_view(request):
             description=request.POST.get('description'),
             deadline=deadline,
             course=course,
-            creator=request.user
+            creator=request.user,
+            allow_multiple_responses=request.POST.get('allow_multiple_responses') == 'on' 
         )
         
         # Save selected teams
@@ -142,7 +174,7 @@ def create_form_view(request):
     
     # Get all courses and teams for the template
     courses = Course.objects.filter(creator=request.user)  # Only show professor's courses
-    teams = Team.objects.all()
+    teams = Team.objects.filter(course__in=courses) # Only show teams for the selected course (How?)
     
     return render(request, 'main/create_form.html', {
         'courses': courses,
@@ -165,35 +197,100 @@ def fill_form_view(request, form_id):
     form = get_object_or_404(Form, id=form_id)
     questions = form.questions.all()
 
-    if request.method == 'POST':
-        # Create the form response
-        form_response = FormResponse.objects.create(
-            form=form,
-            student=request.user
-        )
-        
-        # Save each question response
-        for question in questions:
-            answer = request.POST.get(f'question_{question.id}')
-            if answer is not None:
-                question_response = QuestionResponse(
-                    form_response=form_response,
-                    question=question
-                )
-                
-                if question.question_type == 'text':
-                    question_response.answer_text = answer
-                elif question.question_type == 'multiple_choice':
-                    question_response.selected_choice_id = answer
-                elif question.question_type == 'likert':
-                    print(f"LIKERT DEBUG | question_{question.id} = {answer}")
-                    if answer:
+    # Get the student's team for this course
+    student = request.user
+    teams = student.teams.filter(course=form.course)
+
+    # Assume only one team per course (enforce this elsewhere)
+    team = teams.first()
+    teammates = team.members.exclude(id=student.id) if team else []
+
+    if form.allow_multiple_responses:
+        target_student_id = request.POST.get('target_student') if request.method == 'POST' else None
+        target_student = CustomUser.objects.filter(id=target_student_id).first() if target_student_id else None
+
+
+
+        if request.method == 'POST':
+            # Validation: ensure target is on the same team
+            if not target_student or target_student not in teammates:
+                messages.error(request, "Invalid teammate selected.")
+                return redirect('main:fill_form', form_id=form.id)
+            
+            # Prevent duplicate submissions
+            existing = FormResponse.objects.filter(form=form, student=student, target_student=target_student).first()
+            if existing:
+                messages.warning(request, f"You've already submitted a response for {target_student.get_full_name()}.")
+                return redirect('main:student_forms')
+
+            # Create the form response
+            form_response = FormResponse.objects.create(
+                form=form,
+                student=student,
+                target_student=target_student
+            )
+            
+            # Save each question response
+            for question in questions:
+                answer = request.POST.get(f'question_{question.id}')
+                if answer is not None:
+                    question_response = QuestionResponse(
+                        form_response=form_response,
+                        question=question
+                    )
+                    
+                    if question.question_type == 'text':
+                        question_response.answer_text = answer
+                    elif question.question_type == 'multiple_choice':
+                        try:
+                            choice = Choice.objects.get(id=answer)
+                            question_response.selected_choice = choice
+                        except Choice.DoesNotExist:
+                            # optionally log this or skip saving
+                            pass
+                    elif question.question_type == 'likert':
+                        print(f"LIKERT DEBUG | question_{question.id} = {answer}")
                         question_response.rating_value = int(answer)
-                
-                question_response.save()
+                    
+                    question_response.save()
+            
+            return redirect('main:student_forms')
         
-        return redirect('main:student_forms')
-    return render(request, 'main/fill_form.html', {'form': form, 'questions': questions})
+    else:
+        # Single-response form mode
+        if request.method == 'POST':
+            existing = FormResponse.objects.filter(form=form, student=student).first()
+            if existing:
+                messages.warning(request, "You've already submitted this form.")
+                return redirect('main:student_forms')
+            
+            form_response = FormResponse.objects.create(
+                form=form,
+                student=student
+            )
+            for question in questions:
+                answer = request.POST.get(f'question_{question.id}')
+                if answer is not None:
+                    qr = QuestionResponse(form_response=form_response, question=question)
+                    if question.question_type == 'text':
+                        qr.answer_text = answer
+                    elif question.question_type == 'multiple_choice':
+                        try:
+                            choice = question.choices.get(id=answer)
+                            qr.selected_choice = choice
+                        except:
+                            pass
+                    elif question.question_type == 'likert':
+                        qr.rating_value = int(answer)
+                    qr.save()
+
+            return redirect('main:student_forms') 
+    return render(request, 'main/fill_form.html', {
+        'form': form, 
+        'questions': questions, 
+        'teammates': teammates,
+        'allow_multiple_responses': form.allow_multiple_responses
+    })
 
 @login_required
 def view_responses(request):
@@ -232,6 +329,8 @@ def student_responses(request):
         'responses': responses
     })
 
+User = get_user_model()
+
 @login_required
 def student_response_details(request, response_id):
     # Only allow professors to view responses
@@ -251,4 +350,51 @@ def student_response_details(request, response_id):
     return render(request, 'main/student_response_details.html', {
         'response': response,
         'question_responses': question_responses
+    })
+
+@login_required
+def student_feedback_view(request, form_id, student_id):
+
+    form = get_object_or_404(Form, id=form_id)
+    student = get_object_or_404(User, id=student_id)
+
+    # Average scores for likert/rating questions
+    questions = form.questions.filter(question_type='likert')
+    average_scores = []
+
+    total_score = 0
+    count = 0
+
+    for question in questions:
+        avg = QuestionResponse.objects.filter(
+            question=question,
+            form_response__form=form,
+            form_response__student=student,
+            rating_value__isnull=False
+        ).aggregate(Avg('rating_value'))['rating_value__avg']
+
+        if avg is not None:
+            average_scores.append({
+                'question': question.question_text,
+                'average': avg
+            })
+            total_score += avg
+            count += 1
+
+    cumulative_score = total_score / count if count > 0 else 0
+
+    comments_qs = QuestionResponse.objects.filter(
+        question__form=form,
+        form_response__student=student,
+        question__question_type='text'
+    ).exclude(answer_text="")
+
+    comments = [c.answer_text for c in comments_qs]
+
+    return render(request, 'main/student_feedback.html', {
+        'student': student,
+        'form': form,
+        'average_scores': average_scores,
+        'comments': comments,
+        'cumulative_score': cumulative_score,
     })

@@ -19,6 +19,7 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls), 
+    path('student/', include('student.urls')), # 👈 include the student app urls
     path("", include("main.urls")), # If the path is empty, redirect to the main.urls file.
     path("accounts/", include("allauth.urls")), #Will give us all the roots needed to reset the account (reset password, sign out, etc.)
     path("courses/", include("courses.urls")), # 👈 include the courses app urls
