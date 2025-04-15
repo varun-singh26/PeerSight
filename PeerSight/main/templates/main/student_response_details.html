@@ -28,7 +28,7 @@
                         <p class="text-gray-300">{{ question_response.answer_text }}</p>
                     {% elif question_response.question.question_type == 'multiple_choice' %}
                         <p class="text-gray-300">{{ question_response.selected_choice.choice_text }}</p>
-                    {% elif question_response.question.question_type == 'rating' %}
+                        {% elif question_response.question.question_type == 'likert' %}
                         <div class="flex items-center gap-2">
                             <span class="text-gray-300">Rating:</span>
                             <div class="flex">

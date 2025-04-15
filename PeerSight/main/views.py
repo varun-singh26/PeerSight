@@ -185,8 +185,10 @@ def fill_form_view(request, form_id):
                     question_response.answer_text = answer
                 elif question.question_type == 'multiple_choice':
                     question_response.selected_choice_id = answer
-                elif question.question_type == 'rating':
-                    question_response.rating_value = int(answer)
+                elif question.question_type == 'likert':
+                    print(f"LIKERT DEBUG | question_{question.id} = {answer}")
+                    if answer:
+                        question_response.rating_value = int(answer)
                 
                 question_response.save()
         

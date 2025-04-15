@@ -18,7 +18,7 @@
                     <!-- Likert Scale Handling -->
                     {% if question.question_type == "likert" %}
                         <div class="flex space-x-4">
-                            {% for i in "12345" %}
+                            {% for i in "12345"|make_list %}
                                 <label class="flex items-center space-x-2">
                                     <input type="radio" name="question_{{ question.id }}" value="{{ i }}" class="form-radio text-blue-600">
                                     <span>{{ i }}</span>
@@ -31,7 +31,7 @@
                         <div class="flex flex-col space-y-2">
                             {% for choice in question.choices.all %}
                                 <label class="flex items-center space-x-2">
-                                    <input type="radio" name="question_{{ question.id }}" value="{{ choice.choice_text }}" class="form-radio text-blue-600">
+                                    <input type="radio" name="question_{{ question.id }}" value="{{ choice.id }}">
                                     <span>{{ choice.choice_text }}</span>
                                 </label>
                             {% endfor %}
