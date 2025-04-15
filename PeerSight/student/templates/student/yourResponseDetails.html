@@ -1,11 +1,54 @@
-{% extends "shared/base.html" %}
-{% load custom_tags %}
-
-{% block title %}Response Details{% endblock %}
-
+{% extends 'shared/base.html' %}
 
 {% block content %}
-<div class="max-w-4xl mx-auto bg-white shadow-md rounded-xl p-6 mt-12">
-    <h1 class="text-3xl font-bold mb-6">Response Detail Page for this specific response (ID). Still in Progress</h1>
+<h1 class="text-3xl font-bold mb-5 mt-8 ml-8">Your Submission</h1>
+<hr class="my-4 border-t-4" />
+<div class="flex flex-col gap-8 p-8 bg-gray-100 min-h-screen">
+
+    <div class="bg-white shadow-md rounded-lg p-6 w-full max-w-4xl mx-auto relative">
+        <div class="mb-6 border-b pb-4">
+            <h2 class="text-2xl font-semibold text-gray-900">{{ response.form.title }}</h2>
+            <p class="text-sm text-gray-600">Submitted on: {{ response.submitted_at|date:"F j, Y, g:i a" }}</p>
+        </div>
+
+        <div class="space-y-6">
+            {% for question_response in question_responses %}
+                <div class="border-b pb-4">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">
+                        {{ question_response.question.question_text }}
+                    </h3>
+
+                    {% if question_response.question.question_type == 'text' %}
+                        <p class="text-gray-700">{{ question_response.answer_text }}</p>
+
+                    {% elif question_response.question.question_type == 'multiple_choice' %}
+                        <p class="text-gray-700">{{ question_response.selected_choice.choice_text }}</p>
+
+                    {% elif question_response.question.question_type == 'likert' %}
+                        <div class="flex items-center gap-2">
+                            <span class="text-gray-700">Rating:</span>
+                            <div class="flex">
+                                {% for i in "12345"|make_list %}
+                                    <span class="{% if forloop.counter <= question_response.rating_value %}text-yellow-500{% else %}text-gray-300{% endif %}">
+                                        ★
+                                    </span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="flex justify-between items-center">
+        <a 
+            href="{% url 'main:student_responses' %}"
+            class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+        >
+            Back to Responses
+        </a>
+    </div>
+
 </div>
 {% endblock %}

@@ -168,22 +168,34 @@ def student_responses_view(request):
     })
 
 
+@login_required
 def student_response_details_view(request, response_id):
-    response = get_object_or_404(FormResponse, id=response_id)
-    return render(request, 'student/yourResponseDetails.html', {"response": response})
+    student = request.user
+    response = get_object_or_404(FormResponse, id=response_id, student=student)
 
-    '''questions = response.form.questions.all()
-
-    question_responses = QuestionResponse.objects.filter(form_response=response)
-
-    # Build a mapping of question ID to its response
-    question_response_map = {qr.question.id: qr for qr in question_responses}
+    question_responses = response.question_responses.all().select_related('question')
 
     return render(request, 'student/yourResponseDetails.html', {
         'response': response,
-        'questions': questions,
-        'question_response_map': question_response_map,
-    })'''
+        'question_responses': question_responses
+    })
+
+#def student_response_details_view(request, response_id):
+    #response = get_object_or_404(FormResponse, id=response_id)
+    #return render(request, 'student/yourResponseDetails.html', {"response": response})
+
+    #'''questions = response.form.questions.all()
+
+    #question_responses = QuestionResponse.objects.filter(form_response=response)
+
+    # Build a mapping of question ID to its response
+    #question_response_map = {qr.question.id: qr for qr in question_responses}
+
+    #return render(request, 'student/yourResponseDetails.html', {
+        #'response': response,
+        #'questions': questions,
+        #'question_response_map': question_response_map,
+    #})'''
 
 
    

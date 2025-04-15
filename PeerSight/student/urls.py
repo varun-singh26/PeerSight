@@ -12,4 +12,3 @@ urlpatterns = [
     path('your-feedback/', views.student_received_feedback_view, name="your_received_feedback"),
 ] 
 
-# 
