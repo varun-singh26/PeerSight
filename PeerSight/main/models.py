@@ -12,7 +12,11 @@ class Form(models.Model):
     teams = models.ManyToManyField(Team, related_name='forms', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    allow_multiple_responses = models.BooleanField(default=False, help_text="Allow each student to submit one response per teammate")
 
+    def is_peer_evaluation(self):
+        return self.allow_multiple_responses
+    
     def __str__(self):
         return self.title
 
@@ -41,14 +45,16 @@ class Choice(models.Model):
 
 class FormResponse(models.Model):
     form = models.ForeignKey(Form, on_delete=models.CASCADE, related_name='responses')
-    student = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    student = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="submitted_responses") # the evaluator
+    target_student = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="received_responses", null=True, blank=True) # the evaluatee
     submitted_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ['form', 'student']
+        unique_together = ['form', 'student', 'target_student']
 
     def __str__(self):
         return f"{self.student.username}'s response to {self.form.title}"
+
 
 class QuestionResponse(models.Model):
     form_response = models.ForeignKey(FormResponse, on_delete=models.CASCADE, related_name='question_responses')

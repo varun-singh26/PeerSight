@@ -44,7 +44,7 @@
         >
     </a>
     <a
-        href="#feedback"
+        href="{% url 'student:your_received_feedback' %}"
         class="nav-item flex gap-4 items-center px-8 py-4 cursor-pointer duration-[0.3s] transition-[background-color] max-md:px-5 max-md:py-3 max-sm:px-4 max-sm:py-2.5"
     >
         <i class="ti ti-chart-dots text-2xl text-white"></i>
@@ -53,6 +53,16 @@
             >Feedback Results</span
         >
     </a>
+    <a
+        href="{% url 'student:your_responses' %}"
+        class="nav-item flex gap-4 items-center px-8 py-4 cursor-pointer duration-[0.3s] transition-[background-color] max-md:px-5 max-md:py-3 max-sm:px-4 max-sm:py-2.5"
+    >
+    <i class="ti ti-chart-dots text-2xl text-white"></i>
+    <span
+        class="text-base font-medium text-white max-md:text-sm max-sm:text-sm"
+        >Your Form Responses</span
+    >
+</a>
     <a
         href="#profile"
         class="nav-item flex gap-4 items-center px-8 py-4 cursor-pointer duration-[0.3s] transition-[background-color] max-md:px-5 max-md:py-3 max-sm:px-4 max-sm:py-2.5"

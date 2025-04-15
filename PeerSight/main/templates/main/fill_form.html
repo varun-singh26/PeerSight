@@ -10,6 +10,17 @@
 
         <form method="post" class="space-y-6">
             {% csrf_token %}
+            {% if allow_multiple_responses %}
+                <div class="mb-6">
+                    <label class="block font-bold mb-2 text-gray-700">Who are you evaluating?</label>
+                    <select name="target_student" required class="w-full p-2 rounded border border-gray-300">
+                        <option value="">-- Select a teammate --</option>
+                        {% for teammate in teammates %}
+                            <option value="{{ teammate.id }}">{{ teammate.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            {% endif %}
             {% for question in questions %}
                 <div class="mb-4 p-4 bg-gray-200 rounded-lg shadow-md">
                     <!-- Display the question name correctly -->

@@ -1,0 +1,44 @@
+{% extends "shared/base.html" %}
+{% block title %}Feedback You Received{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto bg-white shadow-md rounded-xl p-6 mt-12">
+    <h1 class="text-3xl font-bold mb-6">Feedback You Received</h1>
+
+    {% if feedback_data %}
+        {% for entry in feedback_data %}
+            <div class="mb-10">
+                <h2 class="text-2xl font-semibold text-blue-800">{{ entry.course.name }}</h2>
+                <div class="mt-4 space-y-8">
+                    {% for f in entry.forms %}
+                        <div class="bg-gray-100 p-5 rounded shadow">
+                            <h3 class="text-xl font-bold text-gray-800 mb-3">{{ f.form.title }}</h3>
+
+                            {% if f.likert_averages %}
+                                <p class="font-semibold mb-2">Average Ratings:</p>
+                                <ul class="list-disc ml-6 mb-4">
+                                    {% for q in f.likert_averages %}
+                                        <li>{{ q.question }} — <strong>{{ q.average }}</strong> / 5</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+
+                            {% if f.comments %}
+                                <p class="font-semibold mb-2">Comments:</p>
+                                <ul class="space-y-2">
+                                    {% for comment in f.comments %}
+                                        <li class="bg-white p-3 rounded border border-gray-300 shadow-sm">{{ comment }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p class="text-gray-600">No one has submitted feedback for you yet.</p>
+    {% endif %}
+</div>
+{% endblock %}
+

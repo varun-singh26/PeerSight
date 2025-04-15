@@ -4,7 +4,9 @@ from django.contrib.auth import logout, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.forms import modelform_factory, modelformset_factory, inlineformset_factory
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from .models import Form, Question, Choice, FormResponse, QuestionResponse
+from users.models import CustomUser
 from courses.models import Course, Team
 from django.core.paginator import Paginator
 from django.http import JsonResponse
@@ -132,7 +134,8 @@ def create_form_view(request):
             description=request.POST.get('description'),
             deadline=deadline,
             course=course,
-            creator=request.user
+            creator=request.user,
+            allow_multiple_responses=request.POST.get('allow_multiple_responses') == 'on' 
         )
         
         # Save selected teams
@@ -194,33 +197,99 @@ def fill_form_view(request, form_id):
     form = get_object_or_404(Form, id=form_id)
     questions = form.questions.all()
 
-    if request.method == 'POST':
-        # Create the form response
-        form_response = FormResponse.objects.create(
-            form=form,
-            student=request.user
-        )
+    # Get the student's team for this course
+    student = request.user
+    teams = student.teams.filter(course=form.course)
+
+    # Assume only one team per course (enforce this elsewhere)
+    team = teams.first()
+    teammates = team.members.exclude(id=student.id) if team else []
+
+    if form.allow_multiple_responses:
+        target_student_id = request.POST.get('target_student') if request.method == 'POST' else None
+        target_student = CustomUser.objects.filter(id=target_student_id).first() if target_student_id else None
+
+
+
+        if request.method == 'POST':
+            # Validation: ensure target is on the same team
+            if not target_student or target_student not in teammates:
+                messages.error(request, "Invalid teammate selected.")
+                return redirect('main:fill_form', form_id=form.id)
+            
+            # Prevent duplicate submissions
+            existing = FormResponse.objects.filter(form=form, student=student, target_student=target_student).first()
+            if existing:
+                messages.warning(request, f"You've already submitted a response for {target_student.get_full_name()}.")
+                return redirect('main:student_forms')
+
+            # Create the form response
+            form_response = FormResponse.objects.create(
+                form=form,
+                student=student,
+                target_student=target_student
+            )
+            
+            # Save each question response
+            for question in questions:
+                answer = request.POST.get(f'question_{question.id}')
+                if answer is not None:
+                    question_response = QuestionResponse(
+                        form_response=form_response,
+                        question=question
+                    )
+                    
+                    if question.question_type == 'text':
+                        question_response.answer_text = answer
+                    elif question.question_type == 'multiple_choice':
+                        try:
+                            choice = Choice.objects.get(id=answer)
+                            question_response.selected_choice = choice
+                        except Choice.DoesNotExist:
+                            # optionally log this or skip saving
+                            pass
+                    elif question.question_type == 'likert':
+                        question_response.rating_value = int(answer)
+                    
+                    question_response.save()
+            
+            return redirect('main:student_forms')
         
-        # Save each question response
-        for question in questions:
-            answer = request.POST.get(f'question_{question.id}')
-            if answer is not None:
-                question_response = QuestionResponse(
-                    form_response=form_response,
-                    question=question
-                )
-                
-                if question.question_type == 'text':
-                    question_response.answer_text = answer
-                elif question.question_type == 'multiple_choice':
-                    question_response.selected_choice_id = answer
-                elif question.question_type == 'rating':
-                    question_response.rating_value = int(answer)
-                
-                question_response.save()
-        
-        return redirect('main:student_forms')
-    return render(request, 'main/fill_form.html', {'form': form, 'questions': questions})
+    else:
+        # Single-response form mode
+        if request.method == 'POST':
+            existing = FormResponse.objects.filter(form=form, student=student).first()
+            if existing:
+                messages.warning(request, "You've already submitted this form.")
+                return redirect('main:student_forms')
+            
+            form_response = FormResponse.objects.create(
+                form=form,
+                student=student
+            )
+            for question in questions:
+                answer = request.POST.get(f'question_{question.id}')
+                if answer is not None:
+                    qr = QuestionResponse(form_response=form_response, question=question)
+                    if question.question_type == 'text':
+                        qr.answer_text = answer
+                    elif question.question_type == 'multiple_choice':
+                        try:
+                            choice = question.choices.get(id=answer)
+                            qr.selected_choice = choice
+                        except:
+                            pass
+                    elif question.question_type == 'likert':
+                        qr.rating_value = int(answer)
+                    qr.save()
+
+            return redirect('main:student_forms') 
+    return render(request, 'main/fill_form.html', {
+        'form': form, 
+        'questions': questions, 
+        'teammates': teammates,
+        'allow_multiple_responses': form.allow_multiple_responses
+    })
 
 @login_required
 def view_responses(request):
