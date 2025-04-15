@@ -65,12 +65,23 @@ def add_student_view(request, course_id):
                 )
                 student.set_unusable_password()  # Set password to unusable (users sign in w/ Google Auth, no password needed for our platform)
                 student.save()
+            
             except IntegrityError:
                 student = CustomUser.objects.filter(
                     Q(student_id=student_id) | Q(email=email),
                     role='student'
                 ).first()
+            
+            except Exception as e:
+                print ("Unexpected error creating student:", e)
+                student = None
 
+        if not student:
+            return render(request, "courses/add_student.html", {
+                'course': course,
+                'teams': teams,
+                'error_message': "Something went wrong creating the student. Please try again."
+            })
             
         # Add to course
         student.courses.add(course)

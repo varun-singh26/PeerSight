@@ -7,12 +7,13 @@
         font-family: 'Poppins', sans-serif;
         background-color: #f5f5f5;
         margin: 0;
-        padding: 20px;
+        padding: 0;
     }
 
     .container {
-        max-width: 800px;
-        margin: auto;
+        width: 100vw;
+        max-width: 100vw;
+        margin: 0;
         padding: 20px;
         background-color: #fff;
         border-radius: 12px;
@@ -76,23 +77,22 @@
 {%endblock%}
 
 {% block content %}
-<div class="container">
-    <div class="header">
-        <h2>Create a New Form</h2>
-    </div>
+<h1 class="text-3xl font-bold mb-5 mt-8 ml-8">Create New Form</h1>
+<hr class="my-4 border-t-4" />
+<div class="container mt-5 mr-5 ml-5 space-y-4">
     <form method="POST" action="{% url 'main:create_form' %}">
         {% csrf_token %}
         <div class="form-group">
             <label>Form Title:</label>
-            <input type="text" name="title" placeholder="Enter Form Title" required>
+            <input class = "p-1.5" type="text" name="title" placeholder="Enter Form Title" required>
         </div>
         <div class="form-group">
             <label>Form Description:</label>
-            <textarea name="description" placeholder="Enter Form Description"></textarea>
+            <textarea class = "p-1.5" name="description" placeholder="Enter Form Description"></textarea>
         </div>
         <div class="form-group">
             <label>Select Class:</label>
-            <select name="course" id="course-select">
+            <select class = "p-1.5" name="course" id="course-select">
                 <option value="">Choose a class...</option>
                 {% for course in courses %}
                     <option value="{{ course.id }}">{{ course.name }}</option>
@@ -101,12 +101,12 @@
         </div>
         <div class="form-group">
             <label>Deadline:</label>
-            <input type="datetime-local" name="deadline">
+            <input class = "p-1.5" type="datetime-local" name="deadline">
         </div>
         <div class="form-group">
-            <label>
-                <input type="checkbox" name="allow_multiple_responses">
-                Allow each student to submit one response per teammate
+            <label class = "flex items-center justify-end space-x- w-full">
+                <span> Allow each student to submit one response per teammate </span>
+                <input type="checkbox" name="allow_multiple_responses" class="form-checkbox">
             </label>
         </div>
         <div class="form-group">
@@ -116,8 +116,8 @@
             </div> 
         </div>
         <div id="questionsContainer"></div>
-        <button type="button" class="add-question-btn">+ Add Question</button>
-        <button type="submit">Save Form</button>
+        <button type="button" class="add-question-btn bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 bg-[#34A853]">+ Add Question</button>
+        <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 bg-[#34A853]">Save Form</button>
     </form>
     
 </div>
@@ -131,11 +131,11 @@
         questionBlock.innerHTML = `
             <div>
                 <label>Question Text:</label>
-                <input type="text" name="question_text_${questionCount}" placeholder="Enter your question">
+                <input type="text" name="question_text_${questionCount}" placeholder="Enter your question" class="p-1.5">
             </div>
             <div>
                 <label>Question Type:</label>
-                <select name="question_type_${questionCount}" class="question-type">
+                <select name="question_type_${questionCount}" class="question-type p-1.5">
                     <option value="text">Short Answer</option>
                     <option value="likert">Likert Scale</option>
                     <option value="multiple_choice">Multiple Choice</option>
@@ -143,7 +143,7 @@
             </div>
             <div class="multiple-choice-options">
                 <label>Options (one per line):</label>
-                <textarea name="choices_${questionCount}" rows="4" placeholder="Enter options, one per line"></textarea>
+                <textarea name="choices_${questionCount}" rows="4" placeholder="Enter options, one per line" class="p-1.5"></textarea>
             </div>
         `;
 

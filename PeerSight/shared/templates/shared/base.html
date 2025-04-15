@@ -25,7 +25,16 @@
         <link rel="stylesheet" href="{% static 'main/css/styles.css' %}">
 
         <!-- Block for additional head content -->
-        {% block extra_head %}{% endblock %}
+        {% block extra_head %}
+        
+        <style>
+            body {
+                background-color: #f0f0f0;
+                font-family: Arial, sans-serif;
+            }
+        </style>
+
+        {% endblock %}
     </head>
     <body class="flex">
         <!-- Dynamically render Sidebar -->
@@ -48,5 +57,6 @@
             </div>
         </div>
         <!-- Bootstrap JS ( If we needed it would go here) -->
+
     </body>
 </html>
