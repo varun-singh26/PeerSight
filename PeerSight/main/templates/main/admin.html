@@ -15,14 +15,14 @@
   </div>
 
   <!-- Courses Display -->
-  <h2 class="text-lg font-bold mb-4">Hello <strong>Administrator</strong> {{ username }}, your current classes are:</h2>
+  <h2 class="text-lg font-bold mb-4">Hello {{ username }}, your current classes are:</h2>
   
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
       {% for course in user_courses %}
       <div class="bg-white border-2 border-black rounded-lg p-4 shadow hover:shadow-lg transition duration-200 text-center w-64 h-48 flex flex-col justify-center items-center">
-          <p class="text-sm text-gray-500">{{ course.course_id }}.{{ course.section }} </p>
+          <p class="text-gray-500">{{ course.course_id }}.{{ course.section }} </p>
           <h3 class="font-bold text-lg mb-2">{{ course.name }}</h3>
-          <p class="text-sm text-gray-500">{{ course.semester }}</p>
+          <p class="text-gray-500">{{ course.semester }}</p>
       </div>
       {% endfor %}
   </div>

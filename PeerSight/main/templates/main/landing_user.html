@@ -20,7 +20,7 @@
         You are logged in as a <strong>{{ request.user.role|title }}</strong>.
     </div>
     
-    <h2>Hello <strong> Student </strong> {{ username }}, your current assigned items are:</h2>
+    <h2>Hello {{ username }}, your current assigned items are:</h2>
     
     <div class="assigned-items">
         {% if assigned_tasks %}
