@@ -10,7 +10,7 @@ from users.models import CustomUser
 from courses.models import Course, Team
 from django.core.paginator import Paginator
 from django.http import JsonResponse
-from django.db.models import Avg
+from django.db.models import Avg, Count
 
 
 # Create your views here.
@@ -313,6 +313,76 @@ def view_responses(request):
 
 def thank_you_page(request):
     return render(request, 'main/thank_you.html')
+
+@login_required
+def evaluate_student_responses(request):
+    if not request.user.is_professor():
+        return redirect('main:student_landing')
+    
+    courses = Course.objects.filter(creator=request.user)
+    selected_course_id = request.GET.get('course')
+    selected_form_id = request.GET.get('form')
+    selected_team_id = request.GET.get('team')
+
+    forms = Form.objects.none()
+    teams = Team.objects.none()
+    evaluations = []
+
+    if selected_course_id:
+        forms = Form.objects.filter(course__id=selected_course_id, creator=request.user)
+
+        if selected_form_id:
+            form = get_object_or_404(Form, id=selected_form_id)
+            teams = form.teams.filter(course_id=selected_course_id)
+
+            if selected_team_id:
+                team = get_object_or_404(Team, id=selected_team_id)
+                questions = Question.objects.filter(form=form)
+                question_map = {q.id: q.question_text for q in questions}
+
+            
+                for student in team.members.all():
+                    # Get all FormResponses submitted *about* this student
+                    responses_about_student = FormResponse.objects.filter(
+                        form=form,
+                        target_student=student
+                    )
+
+                    if not responses_about_student.exists():
+                        continue # skip students with no responses
+
+                    likert_responses = QuestionResponse.objects.filter(
+                        form_response__in=responses_about_student,
+                        question__question_type='likert'
+                    ).values('question').annotate(avg_score=Avg('rating_value'))
+
+                    # Replace question IDs with text
+                    likert_scores = [
+                        {'question_text': question_map[entry['question']], 'avg_score': entry['avg_score']}
+                        for entry in likert_responses
+                    ]
+
+                    comments = QuestionResponse.objects.filter(
+                        form_response__in=responses_about_student,
+                        question__question_type='text'
+                    ).exclude(answer_text="").values_list('answer_text', flat=True)
+
+                    evaluations.append({
+                        'student': student,
+                        'response_count': responses_about_student.count(),
+                        'likert_scores': likert_scores,
+                        'comments': comments,
+                    })
+
+    return render(request, 'main/evaluate_responses.html', {
+        'courses': courses,
+        'forms': forms,
+        'teams': teams,
+        'selected_course_id': selected_course_id,
+        'selected_form_id': selected_form_id,
+        'selected_team_id': selected_team_id,
+        'evaluations': evaluations,
+    })
 
 @login_required
 def student_responses(request):
