@@ -12,6 +12,8 @@ from courses.models import Course, Team
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.db.models import Avg, Count
+from django.utils import timezone
+from datetime import timedelta
 
 
 # Create your views here.
@@ -54,21 +56,50 @@ def admin_landing(request):
     else:
         return render(request, 'main/admin.html', {'username': 'Guest'})
     
-
+@login_required
 def student_landing(request):
-    if request.user.is_authenticated:
-       username = request.user.username
+    user = request.user
+    username = user.first_name or user.username
 
-       try:
-           social_account = request.user.socialaccount_set.filter(provider='google').first()
-           if social_account:
-               username = social_account.extra_data.get('name', username)
-       except:
-           pass
-    else:
-       username = "Guest"
+    user_teams = Team.objects.filter(members=user).prefetch_related('forms')
+
+    assigned_forms = set()
+    for team in user_teams:
+        for form in team.forms.all():
+            assigned_forms.add((form, team))
+
+    assigned_tasks = []
+    now = timezone.now()
+    for form, team in assigned_forms:
+        is_completed = FormResponse.objects.filter(form=form, student=user).exists()
+
+        assigned_tasks.append({
+            'name': form.title,
+            'due_date': form.deadline.strftime("%A %I:%M%p") if form.deadline else "No deadline",
+            'status': 'completed' if is_completed else 'pending',
+            'tag': form.course.name if form.course else "General",
+        })
+
+    user_classes = Course.objects.filter(students=user).select_related('creator')
+
+    teams = Team.objects.filter(members=user).prefetch_related('members')
+
+    team_data = []
+    for team in teams:
+        team_forms = team.forms.all()
+        todo_form = team_forms.exclude(responses__student=user).first()
+
+        team_data.append({
+            'name': team.name,
+            'members': [member.get_full_name() or member.username for member in team.members.all()],
+            'to_do': todo_form.title if todo_form else None,
+        })
+
     context = {
         'username': username,
+        'assigned_tasks': assigned_tasks,
+        'user_classes': user_classes,
+        'teams': team_data,
     }
 
     return render(request, 'main/landing_user.html', context)
