@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect,  get_object_or_404
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseForbidden
 from django.contrib.auth import logout, get_user_model
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
 from django.forms import modelform_factory, modelformset_factory, inlineformset_factory
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import Form, Question, Choice, FormResponse, QuestionResponse
+from .models import Form, Question, Choice, FormResponse, QuestionResponse, Grade
 from users.models import CustomUser
 from courses.models import Course, Team
 from django.core.paginator import Paginator
@@ -314,6 +315,54 @@ def view_responses(request):
 def thank_you_page(request):
     return render(request, 'main/thank_you.html')
 
+
+
+@require_POST
+@login_required
+def publish_grades(request):
+    if not request.user.is_professor():
+        return HttpResponseForbidden()
+    
+    form_id = request.POST.get('form_id')
+    team_id = request.POST.get('team_id')
+
+    team = get_object_or_404(Team, id=team_id)
+    form = get_object_or_404(Form, id=form_id)
+
+    
+    # Publish grades for the form
+    grades = Grade.objects.filter(
+        form=form,
+        student__in=team.members.all()
+    )
+
+    grades.update(published=True)
+
+    return redirect(request.META.get("HTTP_REFERER", '/'))
+
+
+@require_POST
+@login_required
+def assign_grade(request):
+    if not request.user.is_professor():
+        return HttpResponseForbidden()
+    
+    student_id = request.POST.get('student_id')
+    form_id = request.POST.get('form_id')
+    grade_value = request.POST.get('grade_value')
+
+    Grade.objects.update_or_create(
+        student_id=student_id,
+        form_id=form_id,
+        defaults={
+            'professor': request.user,
+            'grade_value': grade_value,
+            'published': False,
+        }
+    )
+
+    return redirect(request.META.get("HTTP_REFERER", '/'))
+
 @login_required
 def evaluate_student_responses(request):
     if not request.user.is_professor():
@@ -327,6 +376,8 @@ def evaluate_student_responses(request):
     forms = Form.objects.none()
     teams = Team.objects.none()
     evaluations = []
+
+    can_publish = False
 
     if selected_course_id:
         forms = Form.objects.filter(course__id=selected_course_id, creator=request.user)
@@ -347,6 +398,12 @@ def evaluate_student_responses(request):
                         form=form,
                         target_student=student
                     )
+
+                    # fetch student's grade (may or may not exist), we'll deal w/ this when passing to template
+                    grade = Grade.objects.filter(
+                        student=student,
+                        form=form
+                    ).first()
 
                     if not responses_about_student.exists():
                         continue # skip students with no responses
@@ -372,8 +429,18 @@ def evaluate_student_responses(request):
                         'response_count': responses_about_student.count(),
                         'likert_scores': likert_scores,
                         'comments': comments,
+                        'grade_value': grade.grade_value if grade else '', 
                     })
 
+                # After building evaluations, check if all students have a grade
+                if team.members.exists():
+                    graded_students_count = Grade.objects.filter(
+                        form_id=selected_form_id,
+                        student__in=team.members.all(),
+                    ).count()
+                    if graded_students_count == team.members.count():
+                        can_publish = True
+                    
     return render(request, 'main/evaluate_responses.html', {
         'courses': courses,
         'forms': forms,
@@ -382,6 +449,7 @@ def evaluate_student_responses(request):
         'selected_form_id': selected_form_id,
         'selected_team_id': selected_team_id,
         'evaluations': evaluations,
+        'can_publish': can_publish,
     })
 
 @login_required

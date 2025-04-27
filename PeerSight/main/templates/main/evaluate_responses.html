@@ -55,12 +55,40 @@
           {% for comment in eval.comments %}
             <li>{{ comment }}</li>
           {% endfor %}
-        </ul>
+        </ul>        
       {% else %}
         <p class="text-gray-500 italic">No comments received.</p>
       {% endif %}
+
+      <form method="POST" action="{% url 'main:assign_grade' %}" class="mt-4">
+        {% csrf_token %}
+        <input type="hidden" name="student_id" value="{{ eval.student.id }}">
+        <input type="hidden" name="form_id" value="{{ selected_form_id }}">
+      
+        <label class="font-semibold">Assign Grade:</label>
+        <input type="text" name="grade_value" value="{{ eval.grade_value }}" class="border rounded px-2 py-1 w-20" placeholder="e.g. 93.5">
+      
+        <button type="submit" class="ml-2 px-4 py-1 bg-blue-600 text-white rounded hover:bg-blue-700">Save</button>
+      </form>
+
     </div>
   {% endfor %}
+
+  {% if can_publish %}
+
+    <form method="POST" action="{% url 'main:publish_grades' %}" class="mt-8">
+      {% csrf_token %}
+      <input type="hidden" name="form_id" value="{{ selected_form_id }}">
+      <input type="hidden" name="team_id" value="{{ selected_team_id }}">
+      
+      <button type="submit" class="px-6 py-3 bg-green-600 text-white text-lg rounded hover:bg-green-700">
+        Publish Grades for Team
+      </button>
+    </form>
+  {% else %}
+    <p class="text-gray-500 text-sm mt-4">All team members must have a grade assigned before publishing.</p>
+  {% endif %}
+
 {% elif selected_team_id %}
   <p class="text-gray-600">No responses found for this team.</p>
 {% endif %}

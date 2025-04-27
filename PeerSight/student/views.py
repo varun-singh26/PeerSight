@@ -1,13 +1,26 @@
 from django.shortcuts import render, redirect,  get_object_or_404
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
-from main.models import Form, Team, FormResponse, QuestionResponse
+from main.models import Form, Team, FormResponse, QuestionResponse, Grade
 from collections import defaultdict
 from django.db.models import Avg
 
 # Create your views here.
 
+
 @login_required
+def my_grades(request):
+    grades = Grade.objects.filter(
+        student=request.user,
+        published=True
+    ).select_related('form', 'form__course')
+
+    return render(request, 'student/my_grades.html', {
+        'grades': grades
+    })
+
+
+
 def student_form_dashboard_view(request):
     student = request.user # CustomUser instance (role='student')
     courses = student.courses.all()
@@ -180,22 +193,7 @@ def student_response_details_view(request, response_id):
         'question_responses': question_responses
     })
 
-#def student_response_details_view(request, response_id):
-    #response = get_object_or_404(FormResponse, id=response_id)
-    #return render(request, 'student/yourResponseDetails.html', {"response": response})
 
-    #'''questions = response.form.questions.all()
-
-    #question_responses = QuestionResponse.objects.filter(form_response=response)
-
-    # Build a mapping of question ID to its response
-    #question_response_map = {qr.question.id: qr for qr in question_responses}
-
-    #return render(request, 'student/yourResponseDetails.html', {
-        #'response': response,
-        #'questions': questions,
-        #'question_response_map': question_response_map,
-    #})'''
 
 
    

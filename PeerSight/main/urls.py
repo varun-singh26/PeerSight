@@ -27,4 +27,6 @@ urlpatterns = [
     path('ajax/get_teams/<int:course_id>/', views.get_teams_for_course, name='get_teams_for_course'),
     path('student-feedback/<int:form_id>/<int:student_id>/', views.student_feedback_view, name='student_feedback'),
     path('evaluate-responses/', views.evaluate_student_responses, name='evaluate_student_responses'),
+    path('assign-grade/', views.assign_grade, name='assign_grade'),
+    path('publish-grades/', views.publish_grades, name='publish_grades'),
 ]
