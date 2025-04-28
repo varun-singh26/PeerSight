@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect,  get_object_or_404
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseForbidden
 from django.contrib.auth import logout, get_user_model
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
 from django.forms import modelform_factory, modelformset_factory, inlineformset_factory
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import Form, Question, Choice, FormResponse, QuestionResponse
+from .models import Form, Question, Choice, FormResponse, QuestionResponse, Grade
 from users.models import CustomUser
 from courses.models import Course, Team
 from django.core.paginator import Paginator
@@ -14,6 +15,9 @@ from django.db.models import Avg
 from main.tasks import send_form_created_email, send_form_deadline_reminder
 from datetime import timedelta
 from django.utils.dateparse import parse_datetime
+from django.db.models import Avg, Count
+from django.utils import timezone
+from datetime import timedelta
 
 
 
@@ -57,21 +61,50 @@ def admin_landing(request):
     else:
         return render(request, 'main/admin.html', {'username': 'Guest'})
     
-
+@login_required
 def student_landing(request):
-    if request.user.is_authenticated:
-       username = request.user.username
+    user = request.user
+    username = user.first_name or user.username
 
-       try:
-           social_account = request.user.socialaccount_set.filter(provider='google').first()
-           if social_account:
-               username = social_account.extra_data.get('name', username)
-       except:
-           pass
-    else:
-       username = "Guest"
+    user_teams = Team.objects.filter(members=user).prefetch_related('forms')
+
+    assigned_forms = set()
+    for team in user_teams:
+        for form in team.forms.all():
+            assigned_forms.add((form, team))
+
+    assigned_tasks = []
+    now = timezone.now()
+    for form, team in assigned_forms:
+        is_completed = FormResponse.objects.filter(form=form, student=user).exists()
+
+        assigned_tasks.append({
+            'name': form.title,
+            'due_date': form.deadline.strftime("%A %I:%M%p") if form.deadline else "No deadline",
+            'status': 'completed' if is_completed else 'pending',
+            'tag': form.course.name if form.course else "General",
+        })
+
+    user_classes = Course.objects.filter(students=user).select_related('creator')
+
+    teams = Team.objects.filter(members=user).prefetch_related('members')
+
+    team_data = []
+    for team in teams:
+        team_forms = team.forms.all()
+        todo_form = team_forms.exclude(responses__student=user).first()
+
+        team_data.append({
+            'name': team.name,
+            'members': [member.get_full_name() or member.username for member in team.members.all()],
+            'to_do': todo_form.title if todo_form else None,
+        })
+
     context = {
         'username': username,
+        'assigned_tasks': assigned_tasks,
+        'user_classes': user_classes,
+        'teams': team_data,
     }
 
     return render(request, 'main/landing_user.html', context)
@@ -339,6 +372,143 @@ def view_responses(request):
 
 def thank_you_page(request):
     return render(request, 'main/thank_you.html')
+
+
+
+@require_POST
+@login_required
+def publish_grades(request):
+    if not request.user.is_professor():
+        return HttpResponseForbidden()
+    
+    form_id = request.POST.get('form_id')
+    team_id = request.POST.get('team_id')
+
+    team = get_object_or_404(Team, id=team_id)
+    form = get_object_or_404(Form, id=form_id)
+
+    
+    # Publish grades for the form
+    grades = Grade.objects.filter(
+        form=form,
+        student__in=team.members.all()
+    )
+
+    grades.update(published=True)
+
+    return redirect(request.META.get("HTTP_REFERER", '/'))
+
+
+@require_POST
+@login_required
+def assign_grade(request):
+    if not request.user.is_professor():
+        return HttpResponseForbidden()
+    
+    student_id = request.POST.get('student_id')
+    form_id = request.POST.get('form_id')
+    grade_value = request.POST.get('grade_value')
+
+    Grade.objects.update_or_create(
+        student_id=student_id,
+        form_id=form_id,
+        defaults={
+            'professor': request.user,
+            'grade_value': grade_value,
+            'published': False,
+        }
+    )
+
+    return redirect(request.META.get("HTTP_REFERER", '/'))
+
+@login_required
+def evaluate_student_responses(request):
+    if not request.user.is_professor():
+        return redirect('main:student_landing')
+    
+    courses = Course.objects.filter(creator=request.user)
+    selected_course_id = request.GET.get('course')
+    selected_form_id = request.GET.get('form')
+    selected_team_id = request.GET.get('team')
+
+    forms = Form.objects.none()
+    teams = Team.objects.none()
+    evaluations = []
+
+    can_publish = False
+
+    if selected_course_id:
+        forms = Form.objects.filter(course__id=selected_course_id, creator=request.user)
+
+        if selected_form_id:
+            form = get_object_or_404(Form, id=selected_form_id)
+            teams = form.teams.filter(course_id=selected_course_id)
+
+            if selected_team_id:
+                team = get_object_or_404(Team, id=selected_team_id)
+                questions = Question.objects.filter(form=form)
+                question_map = {q.id: q.question_text for q in questions}
+
+            
+                for student in team.members.all():
+                    # Get all FormResponses submitted *about* this student
+                    responses_about_student = FormResponse.objects.filter(
+                        form=form,
+                        target_student=student
+                    )
+
+                    # fetch student's grade (may or may not exist), we'll deal w/ this when passing to template
+                    grade = Grade.objects.filter(
+                        student=student,
+                        form=form
+                    ).first()
+
+                    if not responses_about_student.exists():
+                        continue # skip students with no responses
+
+                    likert_responses = QuestionResponse.objects.filter(
+                        form_response__in=responses_about_student,
+                        question__question_type='likert'
+                    ).values('question').annotate(avg_score=Avg('rating_value'))
+
+                    # Replace question IDs with text
+                    likert_scores = [
+                        {'question_text': question_map[entry['question']], 'avg_score': entry['avg_score']}
+                        for entry in likert_responses
+                    ]
+
+                    comments = QuestionResponse.objects.filter(
+                        form_response__in=responses_about_student,
+                        question__question_type='text'
+                    ).exclude(answer_text="").values_list('answer_text', flat=True)
+
+                    evaluations.append({
+                        'student': student,
+                        'response_count': responses_about_student.count(),
+                        'likert_scores': likert_scores,
+                        'comments': comments,
+                        'grade_value': grade.grade_value if grade else '', 
+                    })
+
+                # After building evaluations, check if all students have a grade
+                if team.members.exists():
+                    graded_students_count = Grade.objects.filter(
+                        form_id=selected_form_id,
+                        student__in=team.members.all(),
+                    ).count()
+                    if graded_students_count == team.members.count():
+                        can_publish = True
+                    
+    return render(request, 'main/evaluate_responses.html', {
+        'courses': courses,
+        'forms': forms,
+        'teams': teams,
+        'selected_course_id': selected_course_id,
+        'selected_form_id': selected_form_id,
+        'selected_team_id': selected_team_id,
+        'evaluations': evaluations,
+        'can_publish': can_publish,
+    })
 
 @login_required
 def student_responses(request):

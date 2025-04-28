@@ -65,3 +65,18 @@ class QuestionResponse(models.Model):
 
     def __str__(self):
         return f"Response to {self.question.question_text}"
+    
+
+class Grade(models.Model):
+    form = models.ForeignKey('Form', on_delete=models.CASCADE)
+    student = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    professor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="given_grades")
+    grade_value = models.DecimalField(max_digits=5, decimal_places=2) # or CharField if using A/B/C etc
+    published = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ['form', 'student']
+
+    def __str__(self):
+        return f"{self.student.username} - {self.form.title} - {self.grade_value}"

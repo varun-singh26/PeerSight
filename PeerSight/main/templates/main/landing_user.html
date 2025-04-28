@@ -2,15 +2,10 @@
 
 {% block title %}User Dashboard{% endblock %}
 
-
 {% block extra_head %}
-    <!-- Include any extra styles or meta tags specific to landing_user -->
-    
-    <!-- If you want to use a static CSS file for signin-specific styles -->
     {% load static %}
     <link rel="stylesheet" href="{% static 'main/css/userDashboardStyles.css' %}">
 {% endblock %}
-
 
 {% block content %}
 <div class="dashboard-container">
@@ -19,18 +14,17 @@
     <div class="bg-green-100 border border-green-300 text-green-800 text-sm px-4 py-3 rounded mb-4" role="alert">
         You are logged in as a <strong>{{ request.user.role|title }}</strong>.
     </div>
-    
+
     <h2>Hello {{ username }}, your current assigned items are:</h2>
-    
+
     <div class="assigned-items">
         {% if assigned_tasks %}
             {% for task in assigned_tasks %}
                 <div class="task-card {% if task.status == 'completed' %}completed{% endif %}">
                     <div class="task-header">
                         <span class="task-type">{{ task.name }}</span>
-                        <span class="task-tag swe-tag">SWE</span>
+                        <span class="task-tag">{{ task.tag }}</span>
                     </div>
-                    <p class="est-time">Est. Time required: {{ task.estimated_time }} min</p>
                     {% if task.status == 'completed' %}
                         <div class="due-by">
                             <span>Status:</span>
@@ -45,68 +39,28 @@
                 </div>
             {% endfor %}
         {% else %}
-            <div class="task-card">
-                <div class="task-header">
-                    <span class="task-type">Group Feedback Form</span>
-                    <span class="task-tag algo-tag">Algorithms</span>
-                </div>
-                <p class="est-time">Est. Time required: 5 min</p>
-                <div class="due-by">
-                    <span>Due by:</span>
-                    <span class="due-date">Friday 11:59pm</span>
-                </div>
-            </div>
-            <div class="task-card">
-                <div class="task-header">
-                    <span class="task-type">Project Reflection</span>
-                    <span class="task-tag webdev-tag">Web Dev</span>
-                </div>
-                <p class="est-time">Est. Time required: 5 min</p>
-                <div class="due-by">
-                    <span>Due by:</span>
-                    <span class="due-date">Friday 11:59pm</span>
-                </div>
-            </div>
-            <div class="task-card completed">
-                <div class="task-header">
-                    <span class="task-type">Delivery 1</span>
-                    <span class="task-tag swe-tag">SWE</span>
-                </div>
-                <p class="est-time">Est. Time required: 10 min</p>
-                <div class="due-by">
-                    <span>Status:</span>
-                    <span class="completed-text">Completed</span>
-                </div>
-            </div>
+            <p>No assigned tasks found.</p>
         {% endif %}
     </div>
-    
+
     <div class="dashboard-lower">
+
+        <!-- User Classes -->
         <div class="classes">
             <div class="section-header">Your Classes:</div>
             {% if user_classes %}
                 {% for class in user_classes %}
                     <div class="class-item">
                         <div>{{ class.name }}</div>
-                        <div class="instructor">Instructor: {{ class.instructor }}</div>
+                        <div class="instructor">Instructor: {{ class.creator.get_full_name|default:class.creator.username }}</div>
                     </div>
                 {% endfor %}
             {% else %}
-                <div class="class-item">
-                    <div>Software Engineering</div>
-                    <div class="instructor">Instructor: Maira Samary</div>
-                </div>
-                <div class="class-item">
-                    <div>Algorithms</div>
-                    <div class="instructor">Instructor: Alex Creiner</div>
-                </div>
-                <div class="class-item">
-                    <div>Web Dev</div>
-                    <div class="instructor">Instructor: Mira Yun</div>
-                </div>
+                <p>No classes enrolled.</p>
             {% endif %}
         </div>
-        
+
+        <!-- Team Summary -->
         <div class="team-summary">
             <div class="section-header">Team Summaries:</div>
             {% if teams %}
@@ -124,32 +78,16 @@
                     </div>
                 {% endfor %}
             {% else %}
-                <div class="team">
-                    <h4>Debug Divas:</h4>
-                    <div class="team-members">
-                        <p>1. Gleidson</p>
-                        <p>2. Tyler</p>
-                        <p>3. Hsiu</p>
-                        <p>4. Varun</p>
-                    </div>
-                    <div class="todo-item"><strong>To Do:</strong> Delivery 1 Peer Review</div>
-                </div>
-                <div class="team">
-                    <h4>Team 1:</h4>
-                    <div class="team-members">
-                        <p>1. Gleidson</p>
-                        <p>2. David</p>
-                    </div>
-                    <div class="todo-item"><strong>To Do:</strong> Group Feedback Form</div>
-                </div>
-                </div>
+                <p>You are not part of any teams.</p>
             {% endif %}
         </div>
     </div>
+
     <div class="logout">
         <a href="/logout">
             <button type="button" class="logout-button">Logout</button>
         </a>
     </div>
+
 </div>
 {% endblock %}

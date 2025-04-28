@@ -1,0 +1,99 @@
+{% extends 'shared/base.html' %}
+{%block title%}View Responses{%endblock%}
+
+{% block content %}
+<h1 class="text-3xl font-bold mb-5 mt-8 ml-8">View Form Responses</h1>
+<hr class="my-4 border-t-4" />
+<p class = "ml-5 mb-3 font-bold">Please select the course, form, and team name of the responses you would like to see:</p>
+<form method="get" class="mb-6 space-x-4">
+    <!-- Course filter -->
+    <select name="course" onchange="this.form.submit()" class = "px-1 py-1 ml-5">
+        <option value="">Select a course</option>
+        {% for course in courses %}
+        <option value="{{ course.id }}" {% if course.id|stringformat:"s" == selected_course_id %}selected{% endif %}>{{ course.name }}</option>
+        {% endfor %}
+    </select>
+
+    <!-- Form filter -->
+    {% if forms %}
+    <select name="form" onchange="this.form.submit()" class = "px-1 py-1">
+        <option value="">Select a form</option>
+        {% for form in forms %}
+        <option value="{{ form.id }}" {% if form.id|stringformat:"s" == selected_form_id %}selected{% endif %}>{{ form.title }}</option>
+        {% endfor %}
+    </select>
+    {% endif %}
+
+    <!-- Team filter -->
+    {% if teams %}
+    <select name="team" onchange="this.form.submit()" class = "px-1 py-1">
+        <option value="">Select a team</option>
+        {% for team in teams %}
+        <option value="{{ team.id }}" {% if team.id|stringformat:"s" == selected_team_id %}selected{% endif %}>{{ team.name }}</option>
+        {% endfor %}
+    </select>
+    {% endif %}
+</form>
+
+<!-- Evaluation Cards -->
+{% if evaluations %}
+  {% for eval in evaluations %}
+    <div class="bg-white p-6 shadow-md rounded-lg ml-5 mr-5 mb-6">
+      <h2 class="text-2xl font-semibold mb-2">{{ eval.student.name }} ({{ eval.response_count }} Response{{ eval.response_count|pluralize }})</h2>
+
+      {% if eval.likert_scores %}
+        <p class="font-medium">Likert Averages:</p>
+        <ul class="list-disc pl-5 mb-2">
+          {% for score in eval.likert_scores %}
+            <li>{{ score.question_text }}: {{ score.avg_score|floatformat:2 }}</li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="text-gray-500 italic">No likert ratings.</p>
+      {% endif %}
+
+      {% if eval.comments %}
+        <p class="font-medium">Comments:</p>
+        <ul class="list-disc pl-5">
+          {% for comment in eval.comments %}
+            <li>{{ comment }}</li>
+          {% endfor %}
+        </ul>        
+      {% else %}
+        <p class="text-gray-500 italic">No comments received.</p>
+      {% endif %}
+
+      <form method="POST" action="{% url 'main:assign_grade' %}" class="mt-4">
+        {% csrf_token %}
+        <input type="hidden" name="student_id" value="{{ eval.student.id }}">
+        <input type="hidden" name="form_id" value="{{ selected_form_id }}">
+      
+        <label class="font-semibold">Assign Grade:</label>
+        <input type="text" name="grade_value" value="{{ eval.grade_value }}" class="border rounded px-2 py-1 w-20" placeholder="e.g. 93.5">
+      
+        <button type="submit" class="ml-2 px-4 py-1 bg-green-600 text-white rounded hover:bg-green-700">Save</button>
+      </form>
+
+    </div>
+  {% endfor %}
+
+  {% if can_publish %}
+
+    <form method="POST" action="{% url 'main:publish_grades' %}" class="mt-8">
+      {% csrf_token %}
+      <input type="hidden" name="form_id" value="{{ selected_form_id }}">
+      <input type="hidden" name="team_id" value="{{ selected_team_id }}">
+      
+      <button type="submit" class="px-6 py-3 bg-green-600 text-white text-lg rounded hover:bg-green-700">
+        Publish Grades for Team
+      </button>
+    </form>
+  {% else %}
+    <p class="text-gray-500 text-sm ml-5 mt-4">All team members must have a grade assigned before publishing.</p>
+  {% endif %}
+
+{% elif selected_team_id %}
+  <p class="text-gray-600 ml-5">No responses found for this team.</p>
+{% endif %}
+
+{% endblock %}
