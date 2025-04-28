@@ -17,10 +17,10 @@
   <!-- Courses Display -->
   <h2 class="text-lg font-bold mb-4">Hello {{ username }}, your current classes are:</h2>
   
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
       {% for course in user_courses %}
       <a href="{% url 'courses:course_detail' course.id %}" class="no-underline">
-        <div class="bg-white border-2 border-black rounded-lg p-4 shadow hover:shadow-lg transition duration-200 text-center w-64 h-48 flex flex-col justify-center items-center">
+        <div class="bg-white rounded-lg p-4 shadow hover:shadow-lg transition duration-200 text-center w-full h-48 flex flex-col justify-center items-center">
             <p class="text-gray-500">{{ course.course_id }}.{{ course.section }} </p>
             <h3 class="font-bold text-lg mb-2">{{ course.name }}</h3>
             <p class="text-gray-500">{{ course.semester }}</p>
@@ -69,12 +69,6 @@
               <a href="?page={{ page_obj.next_page_number }}" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Load More</a>
           {% endif %}
       </div>
-  </div>
-
-  <div class="logout">
-    <a href="/logout">
-        <button type="button" class="logout-button">Logout</button>
-    </a>
   </div>
 
 </div>

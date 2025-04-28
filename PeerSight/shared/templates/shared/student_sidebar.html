@@ -14,16 +14,6 @@
     </a>
     
     <a
-        href="#classes"
-        class="nav-item flex gap-4 items-center px-8 py-4 cursor-pointer duration-[0.3s] transition-[background-color] max-md:px-5 max-md:py-3 max-sm:px-4 max-sm:py-2.5"
-    >
-        <i class="ti ti-book text-2xl text-white"></i>
-        <span
-            class="text-base font-medium text-white max-md:text-sm max-sm:text-sm"
-            >Classes</span
-        >
-    </a>
-    <a
         href="{% url 'main:student_forms' %}"
         class="nav-item flex gap-4 items-center px-8 py-4 cursor-pointer duration-[0.3s] transition-[background-color] max-md:px-5 max-md:py-3 max-sm:px-4 max-sm:py-2.5"
     >
@@ -33,26 +23,7 @@
             >Forms</span
         >
     </a>
-    <a
-        href="#teams"
-        class="nav-item flex gap-4 items-center px-8 py-4 cursor-pointer duration-[0.3s] transition-[background-color] max-md:px-5 max-md:py-3 max-sm:px-4 max-sm:py-2.5"
-    >
-        <i class="ti ti-users text-2xl text-white"></i>
-        <span
-            class="text-base font-medium text-white max-md:text-sm max-sm:text-sm"
-            >Teams</span
-        >
-    </a>
-    <a
-        href="{% url 'student:your_received_feedback' %}"
-        class="nav-item flex gap-4 items-center px-8 py-4 cursor-pointer duration-[0.3s] transition-[background-color] max-md:px-5 max-md:py-3 max-sm:px-4 max-sm:py-2.5"
-    >
-        <i class="ti ti-chart-dots text-2xl text-white"></i>
-        <span
-            class="text-base font-medium text-white max-md:text-sm max-sm:text-sm"
-            >Feedback Results</span
-        >
-    </a>
+
     <a
         href="{% url 'student:your_responses' %}"
         class="nav-item flex gap-4 items-center px-8 py-4 cursor-pointer duration-[0.3s] transition-[background-color] max-md:px-5 max-md:py-3 max-sm:px-4 max-sm:py-2.5"
@@ -60,27 +31,39 @@
     <i class="ti ti-chart-dots text-2xl text-white"></i>
     <span
         class="text-base font-medium text-white max-md:text-sm max-sm:text-sm"
-        >Your Form Responses</span
+        >My Form Responses</span
     >
     </a>
+
+    <a
+        href="{% url 'student:your_received_feedback' %}"
+        class="nav-item flex gap-4 items-center px-8 py-4 cursor-pointer duration-[0.3s] transition-[background-color] max-md:px-5 max-md:py-3 max-sm:px-4 max-sm:py-2.5"
+    >
+        <i class="ti ti-message-2 text-2xl text-white"></i>
+        <span
+            class="text-base font-medium text-white max-md:text-sm max-sm:text-sm"
+            >My Feedback</span
+        >
+    </a>
+
     <a
     href="{% url 'student:my_grades' %}"
     class="nav-item flex gap-4 items-center px-8 py-4 cursor-pointer duration-[0.3s] transition-[background-color] max-md:px-5 max-md:py-3 max-sm:px-4 max-sm:py-2.5"
     >
-    <i class="ti ti-chart-dots text-2xl text-white"></i>
+    <i class="ti ti-report text-2xl text-white"></i>
     <span
         class="text-base font-medium text-white max-md:text-sm max-sm:text-sm"
         >My Grades</span
     >
     </a>
+
     <a
-        href="#profile"
+        href="/logout"
         class="nav-item flex gap-4 items-center px-8 py-4 cursor-pointer duration-[0.3s] transition-[background-color] max-md:px-5 max-md:py-3 max-sm:px-4 max-sm:py-2.5"
     >
-        <i class="ti ti-user text-2xl text-white"></i>
-        <span
-            class="text-base font-medium text-white max-md:text-sm max-sm:text-sm"
-            >My Profile</span
+        <i class="ti ti-logout text-2xl text-white"></i>
+        <span class="text-base font-medium text-white max-md:text-sm"
+        >Log Out</span
         >
     </a>
 </nav>
