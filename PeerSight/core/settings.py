@@ -33,6 +33,17 @@ ALLOWED_HOSTS = []
 SITE_ID= 2 # Ensure this matches your Django Site ID (Need to match the site ID of 127.0.0.1 which is what the preview server runs on)
             
 
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'debugdivas2025@gmail.com'
+EMAIL_HOST_PASSWORD = 'picrmpzynicbyhln'  
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -78,7 +89,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'PeerSight.urls'
+ROOT_URLCONF = 'core.urls'
 
 TEMPLATES = [
     {
@@ -99,7 +110,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'PeerSight.wsgi.application'
+WSGI_APPLICATION = 'core.wsgi.application'
 
 
 # Database

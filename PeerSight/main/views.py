@@ -11,6 +11,10 @@ from courses.models import Course, Team
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.db.models import Avg
+from main.tasks import send_form_created_email, send_form_deadline_reminder
+from datetime import timedelta
+from django.utils.dateparse import parse_datetime
+
 
 
 # Create your views here.
@@ -117,12 +121,15 @@ def get_teams_for_course(request, course_id):
     teams = Team.objects.filter(course_id=course_id).values('id', 'name')
     return JsonResponse(list(teams), safe=False)
 
+from django.utils.dateparse import parse_datetime
+
 @login_required
 def create_form_view(request):
     if request.method == 'POST':
-        # Get the deadline value, only set it if it's not empty
-        deadline = request.POST.get('deadline')
-        if not deadline:
+        deadline_raw = request.POST.get('deadline')
+        if deadline_raw:
+            deadline = parse_datetime(deadline_raw)
+        else:
             deadline = None
 
         # Get the selected course
@@ -169,17 +176,36 @@ def create_form_view(request):
                                 question=question,
                                 choice_text=choice_text
                             )
-        
+
+        ## 🔥 --- ADD THIS RIGHT AFTER EVERYTHING IS SAVED ---
+        # Get all students in the course
+        students = CustomUser.objects.filter(teams__course=course).distinct()
+        student_emails = [student.email for student in students]
+
+        # Send immediate notification
+        if student_emails:
+            send_form_created_email.delay(course.name, form_instance.title, student_emails)
+
+            # Schedule reminder if deadline exists
+            if form_instance.deadline:
+                send_time = form_instance.deadline - timedelta(days=1)
+                send_form_deadline_reminder.apply_async(
+                    args=[form_instance.title, student_emails],
+                    eta=send_time
+                )
+        ## 🔥 --- END OF ADDED PART ---
+
         return redirect('main:manage_forms')
     
     # Get all courses and teams for the template
     courses = Course.objects.filter(creator=request.user)  # Only show professor's courses
-    teams = Team.objects.filter(course__in=courses) # Only show teams for the selected course (How?)
-    
+    teams = Team.objects.filter(course__in=courses) # Only show teams for the selected course
+
     return render(request, 'main/create_form.html', {
         'courses': courses,
         'teams': teams
     })
+
 
 def manage_forms_view(request):
     forms = Form.objects.filter(creator=request.user).order_by('-created_at')

@@ -4,6 +4,7 @@ from main.decorators import professor_required
 from django.db import IntegrityError
 from django.db.models import Q
 from users.models import CustomUser # use your actual import path
+from main.tasks import send_welcome_email
 
 from django.contrib.auth import get_user_model
 
@@ -85,6 +86,9 @@ def add_student_view(request, course_id):
             
         # Add to course
         student.courses.add(course)
+
+        send_welcome_email.delay(student.email, course.name)
+
 
         # Add to team
         if new_team_name:
