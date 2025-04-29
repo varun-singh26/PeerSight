@@ -61,6 +61,12 @@ h2 {
 
 .completed {
     background: #2E8B57;
+    color: white;
+}
+
+.not-completed {
+    background: #333;
+    color: white;
 }
 
 .completed-text {

@@ -83,6 +83,7 @@ def student_landing(request):
             'due_date': form.deadline.strftime("%A %I:%M%p") if form.deadline else "No deadline",
             'status': 'completed' if is_completed else 'pending',
             'tag': form.course.name if form.course else "General",
+            'form_id': form.id,
         })
 
     user_classes = Course.objects.filter(students=user).select_related('creator')
