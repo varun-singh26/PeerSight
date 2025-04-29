@@ -19,20 +19,20 @@
         {% if assigned_tasks %}
             {% for task in assigned_tasks %}
             <a href="{% url 'main:fill_form' task.form_id %}" class="block">
-                <div class="w-full h-48 rounded-lg p-4 shadow flex flex-col justify-center items-center 
+                <div class="w-full h-48 bg-white rounded-lg p-4 shadow hover:shadow-lg transition duration-200 flex flex-col justify-center items-center border-2 
                 {% if task.status == 'completed' %}
-                    completed
+                    border-green-500
                 {% else %}
-                    not-completed
+                    border-red-500
                 {% endif %}">
-                        <p class = "text-white">{{ task.tag }}</p>
-                        <h3 class="text-white font-bold text-lg mb-2">{{ task.name }}</h3>
-                        {% if task.status == 'completed' %}
-                            <span class="text-white font-semibold">Status: Completed</span>
-                        {% else %}
-                            <span class="text-white font-semibold">Due by: {{ task.due_date }}</span>
-                        {% endif %}
-                    </div>
+                    <p class="text-gray-700 font-medium">{{ task.tag }}</p>
+                    <h3 class="text-black font-bold text-lg mb-2">{{ task.name }}</h3>
+                    {% if task.status == 'completed' %}
+                        <p class="text-green-600 font-semibold">Status: Completed</p>
+                    {% else %}
+                        <p class="text-red-600 font-semibold">Due by: {{ task.due_date }}</p>
+                    {% endif %}
+                </div>
             </a>
             {% endfor %}
         {% else %}
@@ -41,40 +41,43 @@
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-        <div class="bg-white p-6 rounded-lg shadow">
-            <div class="text-lg font-semibold mb-4">Your Classes</div>
-            {% if user_classes %}
-                {% for class in user_classes %}
-                    <div class="mb-2">
-                        <p class="font-medium">{{ class.name }}</p>
-                        <p class="text-sm text-gray-600">Instructor: {{ class.creator.get_full_name|default:class.creator.username }}</p>
-                    </div>
-                {% endfor %}
-            {% else %}
-                <p class="text-gray-500">No classes enrolled.</p>
-            {% endif %}
-        </div>
-
-        <div class="bg-white p-6 rounded-lg shadow">
-            <div class="text-lg font-semibold mb-4">Team Summaries</div>
-            {% if teams %}
-                {% for team in teams %}
-                    <div class="mb-4">
-                        <h4 class="font-bold">{{ team.name }}:</h4>
-                        <div class="ml-2 text-sm text-gray-700">
-                            {% for member in team.members %}
-                                <p>{{ forloop.counter }}. {{ member }}</p>
-                            {% endfor %}
+        <div>
+            <h2 class="px-5 py-2.5 rounded-lg shadow text-lg font-bold inline-block">Your Classes:</h2>
+            <div class="bg-white p-6 rounded-lg shadow">
+                {% if user_classes %}
+                    {% for class in user_classes %}
+                        <div class="mb-2">
+                            <p class="font-medium">{{ class.name }}</p>
+                            <p class="text-sm text-gray-600">Instructor: {{ class.creator.get_full_name|default:class.creator.username }}</p>
                         </div>
-                        {% if team.to_do %}
-                            <p class="mt-1 text-sm"><strong>To Do:</strong> {{ team.to_do }}</p>
-                        {% endif %}
-                    </div>
-                {% endfor %}
-            {% else %}
-                <p class="text-gray-500">You are not part of any teams.</p>
-            {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <p class="text-gray-500">No classes enrolled.</p>
+                {% endif %}
+            </div>
+        </div>  
+        
+        <div>
+            <h2 class="px-5 py-2.5 rounded-lg shadow text-lg font-bold inline-block">Your Teams:</h2>
+            <div class="bg-white p-6 rounded-lg shadow">
+                {% if teams %}
+                    {% for team in teams %}
+                        <div class="mb-4">
+                            <h4 class="font-bold">{{ team.name }}:</h4>
+                            <div class="ml-2 text-sm text-gray-700">
+                                {% for member in team.members %}
+                                    <p>{{ forloop.counter }}. {{ member }}</p>
+                                {% endfor %}
+                            </div>
+                            {% if team.to_do %}
+                                <p class="mt-1 text-sm"><strong>To Do:</strong> {{ team.to_do }}</p>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-gray-500">You are not part of any teams.</p>
+                {% endif %}
+            </div>
         </div>
     </div>
 

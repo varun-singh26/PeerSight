@@ -1,13 +1,15 @@
 {% extends 'shared/base.html' %}
 
 {% block content %}
-<h1 class="text-2xl font-bold mb-6">My Grades</h1>
+<h1 class="text-3xl font-bold mb-5 mt-8 ml-8">My Grades</h1>
+<hr class="my-4 border-t-4" />
 
 {% if grades %}
   <ul class="space-y-4">
     {% for grade in grades %}
-      <li class="bg-white p-4 shadow rounded">
-        <div class="font-semibold">{{ grade.form.title }} ({{ grade.form.course.name }})</div>
+      <li class="bg-white p-4 shadow rounded px-4 ml-4 mr-4">
+        <h1 class="text-xl font-bold mb-1">{{ grade.form.title }}</h1>
+        <div class="font-medium">{{ grade.form.course.name }}</div>
         <div class="mt-1">Grade: {{ grade.grade_value }}</div>
       </li>
     {% endfor %}
