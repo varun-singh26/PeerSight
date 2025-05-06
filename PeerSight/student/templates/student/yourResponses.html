@@ -23,16 +23,16 @@
                             <p class="text-sm text-neutral-600">Team: No Team Assigned</p>
                         {% endif %}
 
-                        {% if response.target_student %}
-                            <p class="text-sm text-neutral-600">Evaluation for: {{ response.target_student.get_full_name }}</p>
-                        {% else %}
-                            <p class="text-sm text-neutral-600">General Response</p>
-                        {% endif %}
-
-                        <p class="text-sm text-neutral-600">Submitted: {{ response.submitted_at|date:"F j, Y, g:i a" }}</p>
-                    </div>
-                    <div class="flex gap-2">
-                        <a href="{% url 'student:your_response_details' response.id %}" class="bg-zinc-900 text-white px-4 py-2 rounded-md hover:bg-opacity-90 transition">
+                            {% if response.target_student %}
+                                Evaluation for: {{ response.target_student.name }}
+                            {% else %}
+                                General Response
+                            {% endif %}
+                            
+                            <br>
+                            Submitted: {{ response.submitted_at|date:"F j, Y, g:i a" }}
+                        </p>
+                        <a href="{% url 'student:your_response_details' response.id %}" class="inline-block mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
                             View Your Answers
                         </a>
                     </div>

@@ -125,30 +125,50 @@ QuestionFormSet = modelformset_factory(Question, fields=('question_text', 'quest
 @login_required
 def student_forms_view(request):
     student = request.user
+    selected_course_id = request.GET.get('course')
 
-    #Get all the teams the student is on
+    # Get all teams the student is on
     teams = student.teams.select_related('course').prefetch_related('forms')
 
-    # Build a mapping from form to the team it's assigned to (from this student's teams)
     form_team_map = {}
-    student_forms = set()
+    form_status_list = [] # each element: {'form': form, 'team': team, 'completed': True/False} 
+    courses = set()
 
     for team in teams:
+        courses.add(team.course) # collect all courses 
         for form in team.forms.all():
-            student_forms.add(form)
-            form_team_map[form.id] = team # This works assuming each form is assigned to only one team per student
-    
-    #Convert to list and sort
-    student_forms = sorted(list(student_forms), key=lambda f: f.created_at, reverse=True) #
+            if selected_course_id and str(team.course.id) != selected_course_id:
+                continue  # filter by selected course if applied
+
+            form_team_map[form.id] = team
+
+            # Check if the student has submitted a response for this form
+            has_submitted = FormResponse.objects.filter(form=form, student=student).exists()
+
+            form_status_list.append({
+                'form': form,
+                'team': team,
+                'completed': has_submitted,
+            })
+
+    # Separate incomplete and completed forms
+    incomplete_forms = [entry for entry in form_status_list if not entry['completed']]
+    completed_forms = [entry for entry in form_status_list if entry['completed']]
+
+    # Sort incomplete forms by deadline ascending (earlier deadlines first)
+    incomplete_forms.sort(key=lambda x: (x['form'].deadline or timezone.now() + timezone.timedelta(days=365)))
+
+    # Optional: Sort completed forms by submitted_at if you want to make it fancy
+    completed_forms.sort(key=lambda x: x['form'].created_at, reverse=True)
 
     return render(request, 'main/student_forms.html', {
-        'forms': student_forms,
+        'incomplete_forms': incomplete_forms,
+        'completed_forms': completed_forms,
         'form_team_map': form_team_map,
+        'courses': courses,
+        'selected_course_id': selected_course_id,
     })
 
-    # Get all forms for courses where the user is enrolled as a student
-    student_forms = Form.objects.filter(course__students__email=request.user.email).order_by('-created_at')
-    return render(request, 'main/student_forms.html', {'forms': student_forms})
 
 @login_required
 def get_teams_for_course(request, course_id):

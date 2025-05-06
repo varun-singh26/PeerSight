@@ -170,3 +170,13 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 PeerSight_venv/
+
+
+# SQLite database backups
+*backup*.sqlite3
+
+# Redis dump files
+dump.rdb
+
+# Local environment metadata
+.python-version

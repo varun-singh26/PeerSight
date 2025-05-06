@@ -9,7 +9,9 @@ class Course(models.Model):
         settings.AUTH_USER_MODEL,
         limit_choices_to={'role': 'professor'},
         on_delete=models.CASCADE,
-        related_name='courses_created'
+        related_name='courses_created',
+        null=True,
+        blank=True
     )
     name = models.CharField(max_length=200)
     subject = models.CharField(max_length=100)

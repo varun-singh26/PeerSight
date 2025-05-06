@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect,  get_object_or_404
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
-from main.models import Form, Team, FormResponse, QuestionResponse, Grade
+from main.models import Form, FormResponse, QuestionResponse, Grade
+from courses.models import Team
 from collections import defaultdict
 from django.db.models import Avg
 
