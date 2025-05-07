@@ -47,10 +47,6 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL")
 CELERY_RESULT_BACKEND = os.environ.get("CELERY_RESULT_BACKEND", CELERY_BROKER_URL)
 
-if CELERY_BROKER_URL and CELERY_BROKER_URL.startswith("rediss://"):
-    CELERY_RESULT_BACKEND_TRANSPORT_OPTIONS = {
-        'ssl_cert_reqs': 'CERT_NONE'
-    }
 
 INSTALLED_APPS = [
     'django.contrib.admin',
