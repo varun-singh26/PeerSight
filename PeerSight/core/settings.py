@@ -44,14 +44,13 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'debugdivas2025@gmail.com'
 EMAIL_HOST_PASSWORD = 'picrmpzynicbyhln'  
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL") # rediss://default:AYRIAAIjcDE0Njg2MmRiMGNhMDY0MTZjOGQwMjAxNGQ1NmQ1MzExZXAxMA@desired-lacewing-33864.upstash.io:6379 Previously: 'redis://localhost:6379/0'
+CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL")
 CELERY_RESULT_BACKEND = os.environ.get("CELERY_RESULT_BACKEND", CELERY_BROKER_URL)
-if CELERY_BROKER_URL and CELERY_BROKER_URL.startswith("rediss://"):
-    CELERY_REDIS_BACKEND_USE_SSL = True
-    CELERY_REDIS_BACKEND_SSL = {
-        "ssl_cert_reqs": "CERT_NONE"  # or "CERT_REQUIRED" if you have proper certs
-    }
 
+if CELERY_BROKER_URL and CELERY_BROKER_URL.startswith("rediss://"):
+    CELERY_RESULT_BACKEND_TRANSPORT_OPTIONS = {
+        'ssl_cert_reqs': 'CERT_NONE'
+    }
 
 INSTALLED_APPS = [
     'django.contrib.admin',
