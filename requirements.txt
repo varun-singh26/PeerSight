@@ -18,3 +18,5 @@ whitenoise             # Serves static files in production
 dj-database-url        # Parses database URLs (for Render’s PostgreSQL)
 psycopg2-binary        # PostgreSQL adapter (skip if using SQLite)
 python-decouple        # Optional: if you want cleaner environment variable management
+dj-database-url
+psycopg2-binary
