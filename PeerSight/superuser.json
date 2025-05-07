@@ -1,0 +1,194 @@
+[
+{
+  "model": "users.customuser",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$imZX9yBKT9foEog8MDdeCY$iXj5V8vqKJ1TWtlfJycxfiay4/MrnxVI41S1KiMQUZ0=",
+    "last_login": "2025-04-30T13:16:23.987Z",
+    "is_superuser": false,
+    "username": "varun",
+    "first_name": "",
+    "last_name": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-03-18T23:15:13.022Z",
+    "role": "student",
+    "name": "default_name",
+    "student_id": "3",
+    "graduation_year": null,
+    "email": "vrjsingh04@gmail.com",
+    "groups": [],
+    "user_permissions": [],
+    "courses": [
+      8,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17
+    ]
+  }
+},
+{
+  "model": "users.customuser",
+  "pk": 2,
+  "fields": {
+    "password": "!Fp5t5L4qoH1rHDfdsYIF9j8gOeWxQYCAGC4wfAn0",
+    "last_login": "2025-05-06T23:08:43.860Z",
+    "is_superuser": false,
+    "username": "varun1",
+    "first_name": "Varun",
+    "last_name": "Singh",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-03-19T00:04:32.323Z",
+    "role": "student",
+    "name": "default_name",
+    "student_id": "67149711",
+    "graduation_year": null,
+    "email": "singhva@bc.edu",
+    "groups": [],
+    "user_permissions": [],
+    "courses": [
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18
+    ]
+  }
+},
+{
+  "model": "users.customuser",
+  "pk": 3,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$KLACtBgX7B02uo2G8oIsNw$7k7uSpBAE8Bei0nFh8xnnQq8UMCrC6+uvuykYGZAwjA=",
+    "last_login": "2025-05-06T23:09:44.216Z",
+    "is_superuser": true,
+    "username": "varun_singh",
+    "first_name": "",
+    "last_name": "",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2025-03-24T14:21:22.172Z",
+    "role": "professor",
+    "name": "default_name",
+    "student_id": null,
+    "graduation_year": null,
+    "email": "vrjsingh04@icloud.com",
+    "groups": [],
+    "user_permissions": [],
+    "courses": []
+  }
+},
+{
+  "model": "users.customuser",
+  "pk": 4,
+  "fields": {
+    "password": "!oVGKlgu7VWQpieSixilcaD6rdWWIqCI69fvbofEg",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "jbhar",
+    "first_name": "",
+    "last_name": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-04-10T16:57:32.459Z",
+    "role": "student",
+    "name": "Josh Bhar",
+    "student_id": "1",
+    "graduation_year": 2026,
+    "email": "jbhar@bc.edu",
+    "groups": [],
+    "user_permissions": [],
+    "courses": [
+      7,
+      8,
+      11
+    ]
+  }
+},
+{
+  "model": "users.customuser",
+  "pk": 5,
+  "fields": {
+    "password": "!DfR9dKPqa78xzwY5emlOSUktyTviAMlfqpaiPJN8",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "msmith",
+    "first_name": "",
+    "last_name": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-04-15T17:17:44.825Z",
+    "role": "student",
+    "name": "Mac Smith",
+    "student_id": "2",
+    "graduation_year": 2026,
+    "email": "msmith@bc.edu",
+    "groups": [],
+    "user_permissions": [],
+    "courses": [
+      8
+    ]
+  }
+},
+{
+  "model": "users.customuser",
+  "pk": 6,
+  "fields": {
+    "password": "!EndiOEriJxrX0MrdCsbErabHQdCvsUFOU1H1SYq3",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "hScheppat",
+    "first_name": "",
+    "last_name": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-04-29T02:55:42.560Z",
+    "role": "student",
+    "name": "Hunter Scheppat",
+    "student_id": "4",
+    "graduation_year": 2026,
+    "email": "hScheppat@bc.edu",
+    "groups": [],
+    "user_permissions": [],
+    "courses": [
+      8,
+      13,
+      14
+    ]
+  }
+},
+{
+  "model": "users.customuser",
+  "pk": 7,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$I4wkEDaTqL16Xh1eyKK7Fw$GUMA8kg+rCon25y7Icb1IghclFIkKgym87So1UgmXbs=",
+    "last_login": null,
+    "is_superuser": true,
+    "username": "debug_divas",
+    "first_name": "",
+    "last_name": "",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2025-05-07T02:13:21.193Z",
+    "role": "student",
+    "name": "",
+    "student_id": null,
+    "graduation_year": null,
+    "email": "debugdivas2025@gmail.com",
+    "groups": [],
+    "user_permissions": [],
+    "courses": []
+  }
+}
+]
