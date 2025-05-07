@@ -87,7 +87,7 @@ def add_student_view(request, course_id):
         # Add to course
         student.courses.add(course)
 
-        send_welcome_email.delay(student.email, course.name)
+        #send_welcome_email.delay(student.email, course.name)
 
 
         # Add to team

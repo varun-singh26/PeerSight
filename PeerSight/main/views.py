@@ -238,15 +238,15 @@ def create_form_view(request):
 
         # Send immediate notification
         if student_emails:
-            send_form_created_email.delay(course.name, form_instance.title, student_emails)
+            #send_form_created_email.delay(course.name, form_instance.title, student_emails)
 
             # Schedule reminder if deadline exists
             if form_instance.deadline:
                 send_time = form_instance.deadline - timedelta(days=1)
-                send_form_deadline_reminder.apply_async(
-                    args=[form_instance.title, student_emails],
-                    eta=send_time
-                )
+                #send_form_deadline_reminder.apply_async(
+                 #   args=[form_instance.title, student_emails],
+                  #  eta=send_time
+                #)
         ## 🔥 --- END OF ADDED PART ---
 
         return redirect('main:manage_forms')
