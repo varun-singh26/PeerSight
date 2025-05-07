@@ -17,6 +17,23 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+# ✅ SUPERUSER CREATION HOOK (remove after first deploy)
+from django.contrib.auth import get_user_model
+from django.db.utils import IntegrityError
+
+User = get_user_model()
+
+try:
+    if not User.objects.filter(username='admin').exists():
+        User.objects.create_superuser(
+            username='admin',
+            email='admin@example.com',
+            password='adminpass123'
+        )
+        print("✅ Superuser created!")
+except IntegrityError:
+    pass
+
 urlpatterns = [
     path('admin/', admin.site.urls), 
     path('student/', include('student.urls')), # 👈 include the student app urls
